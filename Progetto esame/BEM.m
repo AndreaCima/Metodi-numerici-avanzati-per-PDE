@@ -1,7 +1,7 @@
 clear; clc; close all; 
 
 % Parameters
-v = [1+1i, -1+1i, -1-1i]; % vertices of \Gamma counterclockwise
+v = [1+1i, -1+1i, -1-1i]; % vertices of \Gamma (counterclockwise)
 k = 5;
 N = 50; % degrees of freedom
 x_lim = [-2 2];
