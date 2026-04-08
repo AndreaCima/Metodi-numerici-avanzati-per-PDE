@@ -29,13 +29,13 @@ for i = 1:n_sides
     h_k(i) = abs(p_k{i}(2)-p_k{i}(1));
 end
 
-% plot(real(v), imag(v), LineWidth=2)
-% grid on
-% hold on
-% for i = 1:n_sides
-%     scatter(real(p_k{i}), imag(p_k{i}), 20, 'filled', 'ro')
-%     scatter(real(x_k{i}), imag(x_k{i}), 20, 'filled', 'green', 'd')
-% end
-% 
-% xlim(x_lim)
-% ylim(y_lim)
+plot(real(v), imag(v), LineWidth=2)
+grid on
+hold on
+for i = 1:n_sides
+    scatter(real(p_k{i}), imag(p_k{i}), 20, 'filled', 'ro')
+    scatter(real(x_k{i}), imag(x_k{i}), 20, 'filled', 'green', 'd')
+end
+
+xlim(x_lim)
+ylim(y_lim)
