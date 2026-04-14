@@ -2,8 +2,8 @@ clear; clc; close all;
 
 % Parameters
 v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
-k = 20;
-N = 80; % degrees of freedom. (Usually N ~ k ~ 1/h) # TO MODIFY AT THE END
+k = 2;
+N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
 x_lim = [-2 2]; 
 y_lim = [-2 2];
 theta = pi/3;
