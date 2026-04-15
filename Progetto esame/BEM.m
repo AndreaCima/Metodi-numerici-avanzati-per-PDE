@@ -64,6 +64,7 @@ tau_k = [tau_k{:}].';
 % title('$u_{inc}$', Interpreter='latex')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Assembling A and F
+tic
 F = -u_inc(x_k);
 
 A = zeros(N, N);
@@ -84,11 +85,15 @@ for j = 1:N
     integrand = besselh(0, 1, k*y_q);
     A(j, j) = (1i/2)*(h_k(j)/4)*wq_on_diag.'*integrand;
 end
+time_assembling = toc;
 
 % Solve the linear system
+tic
 psi = A\F;
+time_lin_sist = toc; 
 
 % Plot the solution
+tic
 x_plot = linspace(x_lim(1), x_lim(2), n_points_plot);
 y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
 [X, Y] = meshgrid(x_plot, y_plot);
@@ -112,6 +117,7 @@ for j = 1:numel(Z)
         u_scat(j) = val;
     end
 end
+time_plot = toc;
 
 u_inc_grid = u_inc(Z);
 u_inc_grid(in) = NaN;
@@ -127,6 +133,10 @@ title("$u_{inc}$", Interpreter="latex")
 figure ;
 pcolor(X, Y, real(u_tot)); shading flat
 title("$u_{tot}$", Interpreter="latex")
+
+fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
+fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
+fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
 
 function [x, w] = gaussquad(q)
 % quadrature nodes and weights for the Gauss quadrature on [-1 1]
