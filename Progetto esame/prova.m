@@ -1,12 +1,12 @@
 clear; clc; close all; 
 
 % Parameters
-v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
+v = 0.5*[-1+1i, -1-1i, 1-1i, 1+1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
 N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
 x_lim = [-2 2]; 
 y_lim = [-2 2];
-theta = pi/3;
+theta = -pi/4;
 n_gauss_pts_plot = 5;
 n_gauss_pts_off_diag = 4;
 n_gauss_pts_on_diag = 10;
@@ -134,15 +134,15 @@ u_inc_grid = u_inc(Z);
 u_inc_grid(in) = NaN;
 u_tot = u_scat + u_inc_grid;
 figure;
-pcolor(X, Y, real(u_scat)); shading flat
+pcolor(X, Y, real(u_scat)); shading flat; axis square
 title("$u_{scat}$", Interpreter="latex")
 
 figure;
-pcolor(X, Y, real(u_inc_grid)); shading flat
+pcolor(X, Y, real(u_inc_grid)); shading flat; axis square
 title("$u_{inc}$", Interpreter="latex")
 
 figure ;
-pcolor(X, Y, real(u_tot)); shading flat
+pcolor(X, Y, real(u_tot)); shading flat; axis square
 title("$u_{tot}$", Interpreter="latex")
 
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)

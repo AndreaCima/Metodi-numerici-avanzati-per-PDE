@@ -1,4 +1,4 @@
-function [u_scat, times] = BEM_func(N)
+function [u_scat, times, h_k] = BEM_func(N)
     % Parameters
     v = 0.5*[-1+1i, -1-1i, 1-1i, 1+1i]; % vertices of \Gamma (counterclockwise)
     k = 20;
@@ -6,11 +6,11 @@ function [u_scat, times] = BEM_func(N)
 
     x_lim = [-1.5 1.5]; 
     y_lim = [-1.5 1.5];
-    theta = pi/3;
+    theta = -pi/4;
     n_gauss_pts_plot = 5;
     n_gauss_pts_off_diag = 5;
     n_gauss_pts_on_diag = 30;
-    n_points_plot = 200;
+    n_points_plot = 150;
     u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
     
     % Geometry
