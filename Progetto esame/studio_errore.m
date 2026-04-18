@@ -4,19 +4,18 @@ clear; clc; close all;
 % l'errore
 N_ref = 150;
 N_val = 90:-10:20;
-n_test = length(N_val);
 
-Err = zeros(n_test, 1);
-times = zeros(n_test, 3);
+Err = zeros(length(N_val), 1);
+times = zeros(length(N_val), 3);
 
 [u_scat_ref, ~] = BEM_func(N_ref);
 
-for n = N_val
-    fprintf("N = %d\n", n)
-    [u_scat, time] = BEM_func(n);
+for s = 1:length(N_val)
+    fprintf("N = %d\n", N_val(s))
+    [u_scat, time] = BEM_func(N_val(s));
     mask = ~isnan(u_scat) & ~isnan(u_scat_ref);
-    Err(n) = norm(u_scat(mask)-u_scat_ref(mask), 2);
-    times(n, :) = time;
+    Err(s) = norm(u_scat(mask)-u_scat_ref(mask), 2);
+    times(s, :) = time;
 end
 
 semilogy(N_val, Err, LineWidth=2)
