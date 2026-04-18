@@ -1,15 +1,15 @@
-function [u_scat, time_assembling, time_lin_sist, time_plot] = BEM_func(N)
+function [u_scat, times] = BEM_func(N)
     % Parameters
-    v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
+    v = 0.5*[-1+1i, -1-1i, 1-1i, 1+1i]; % vertices of \Gamma (counterclockwise)
     k = 20;
 %     N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
 
-    x_lim = [-2 2]; 
-    y_lim = [-2 2];
+    x_lim = [-1.5 1.5]; 
+    y_lim = [-1.5 1.5];
     theta = pi/3;
     n_gauss_pts_plot = 5;
-    n_gauss_pts_off_diag = 4;
-    n_gauss_pts_on_diag = 10;
+    n_gauss_pts_off_diag = 5;
+    n_gauss_pts_on_diag = 30;
     n_points_plot = 200;
     u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
     
@@ -39,7 +39,7 @@ function [u_scat, time_assembling, time_lin_sist, time_plot] = BEM_func(N)
     x_k = [x_k{:}].'; 
     p_k = [p_k{:}].'; 
     % delete the edges of Gamma (where diff(p_k)=0. I mantain th first one st p_0 = p_N
-    p_k = p_k([true; diff(p_k) ~= 0]); 
+    p_k = p_k(diff(p_k) ~= 0); 
     h_k = [h_k{:}].';
     tau_k = [tau_k{:}].';
     
@@ -70,12 +70,10 @@ function [u_scat, time_assembling, time_lin_sist, time_plot] = BEM_func(N)
     A = zeros(N, N);
     [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
     for j = 1:N
-        for m = 1:N
-            y_q = p_k(m) + (h_k(m)/2) * (xq_off_diag+1) * tau_k(m);
-            r = abs(x_k(j)-y_q);
-            integrand = besselh (0, 1, k*r);
-            A(j, m) = (1i/4)*(h_k(m)/2) * wq_off_diag.'*integrand;
-        end
+        y_q = p_k + (h_k/2) * (xq_off_diag.'+1) .* tau_k;
+        r = abs(x_k(j)-y_q);
+        integrand2 = besselh(0, 1, k*r);
+        A(j, :) = sum((1i/4) * integrand2 .* h_k/2 * wq_off_diag, 2);
     end
     % fix the diagonal of A
     [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
@@ -107,18 +105,16 @@ function [u_scat, time_assembling, time_lin_sist, time_plot] = BEM_func(N)
         if in(j)
             u_scat(j) = NaN; % inside the polygon
         else
-            val = 0;
-            for m = 1:N
-                y_q = p_k(m) + (h_k(m)/2) * (xq_plot+1) * tau_k(m);
-                r = abs(Z(j) - y_q);
-                integrand = besselh(0, 1, k * r);
-                val = val + (1i / 4) * psi(m) * (h_k(m)/2)* (wq_plot.' * integrand);
-            end
-            u_scat(j) = val;
+            y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
+            r = abs(Z(j)-y_q);
+            integrand = besselh(0, 1, k*r);
+            u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
         end
     end
     time_plot = toc;
+    times = [time_assembling, time_lin_sist, time_plot];
 end
+
 
 function [x, w] = gaussquad(q)
     % quadrature nodes and weights for the Gauss quadrature on [-1 1]

@@ -9,14 +9,13 @@ n_test = length(N_val);
 Err = zeros(n_test, 1);
 times = zeros(n_test, 3);
 
-[u_scat_ref, ~] = BEM_func(N_ref);
-
-for n = N_val
-    fprintf("N = %d\n", n)
-    [u_scat, time] = BEM_func(n);
+[u_scat_ref, time_assembling_ref, time_lin_sist_ref, time_plot_ref] = BEM_func(N_ref);
+for s=1:n_test
+    fprintf("N = %d\n", N_val(s))
+    [u_scat, times] = BEM_func(N_val(s));
     mask = ~isnan(u_scat) & ~isnan(u_scat_ref);
-    Err(n) = norm(u_scat(mask)-u_scat_ref(mask), 2);
-    times(n, :) = time;
+    Err(s) = norm(u_scat(mask)-u_scat_ref(mask), 2);
+    times = [times;];
 end
 
 semilogy(N_val, Err, LineWidth=2)
@@ -31,18 +30,9 @@ ylabel("Error")
 clear; clc; close all; 
 
 N = 16*(1:256);
-n = load("MPSpackBenchmarkSquareScatt.mat");
+s = load("MPSpackBenchmarkSquareScatt.mat");
 
-mask = linspace(-1.5, 1.5, 200);
-[X_mask, Y_mask] = meshgrid(mask);
-mask_ball = (X_mask.^2 + Y_mask.^2 <= 1); % disco unitario
-
-for n = N
-    fprintf("N = %d", n)
-    []
-end
-
-
+mask = linspace(-1.5, 1.5, ) 
 
 
 

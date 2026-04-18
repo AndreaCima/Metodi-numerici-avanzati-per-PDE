@@ -2,8 +2,7 @@ clear; clc; close all;
 k = 5;
 x0 = 1 + 1i;
 
-
-u_circ = @(x) exp(1i * k * abs(x - x0));
+u_circ = @(x) besselh(0,1, k*abs(x - x0));
 
 x_plot = linspace(real(x0)-5, real(x0)+5, 400);
 y_plot = linspace(imag(x0)-5, imag(x0)+5, 400);
