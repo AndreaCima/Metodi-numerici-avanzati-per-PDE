@@ -3,13 +3,13 @@ clear; clc; close all;
 % Parameters
 v = 0.5*[-1+1i, -1-1i, 1-1i 1+1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
-N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
+N = 1000; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
 x_lim = [-1.5 1.5]; 
 y_lim = [-1.5 1.5];
 theta = -pi/4;
 n_gauss_pts_plot = 5;
-n_gauss_pts_off_diag = 4;
-n_gauss_pts_on_diag = 10;
+n_gauss_pts_off_diag = 5;
+n_gauss_pts_on_diag = 30;
 n_points_plot = 150;
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 

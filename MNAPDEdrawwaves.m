@@ -24,8 +24,8 @@ th0 = 0;                   % Herglotz density is = 1 on interval [th0,th1] and 0
 th1 = pi/6;
 MieRadius = 1/4;           % Radius of disc for Mie scattering
 
-WithSaveFig = 0;           % Save all figures as .png, choose 1 or 0
-WithGif = 0;               % Generates time-harmonic animated gifs
+WithSaveFig = 1;           % Save all figures as .png, choose 1 or 0
+WithGif = 1;               % Generates time-harmonic animated gifs
 % Warning: gif-making is slow, closes all pics, don't use PC while running it!
 
 %% Set up  ----------------------------------------------------------

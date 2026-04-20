@@ -72,8 +72,8 @@ function [u_scat, times, h_k] = BEM_func(N)
     for j = 1:N
         y_q = p_k + (h_k/2) * (xq_off_diag.'+1) .* tau_k;
         r = abs(x_k(j)-y_q);
-        integrand2 = besselh(0, 1, k*r);
-        A(j, :) = sum((1i/4) * integrand2 .* h_k/2 * wq_off_diag, 2);
+        integrand = besselh(0, 1, k*r);
+        A(j, :) = sum((1i/4) * integrand .* h_k/2 * wq_off_diag, 2);
     end
     % fix the diagonal of A
     [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
@@ -91,7 +91,7 @@ function [u_scat, times, h_k] = BEM_func(N)
     time_lin_sist = toc; 
     
     % Plot the solution
-    tic
+
     x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
     y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
     [X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1)); % per fare il confronoto con MPSpack
@@ -100,17 +100,19 @@ function [u_scat, times, h_k] = BEM_func(N)
     u_scat = zeros(size(Z));
     in = inpolygon(X, Y, real(v), imag(v));
     [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
-    
-    for j = 1:numel(Z)
-        if in(j)
-            u_scat(j) = NaN; % inside the polygon
-        else
-            y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
-            r = abs(Z(j)-y_q);
-            integrand = besselh(0, 1, k*r);
-            u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
-        end
+    xq_plot = reshape(xq_plot, 1, 1, n_gauss_pts_plot);
+    wq_plot = reshape(wq_plot, 1, 1, n_gauss_pts_plot);
+
+    for j = 1:N
+
+        y_q = p_k(j) +  h_k(j)/2 * (xq_plot +1)  * tau_k(j);
+        r = abs(Z - y_q);
+
+        integrand = besselh(0, 1, k*r);
+        u_scat = u_scat + sum( (1i/4)  * integrand .* wq_plot * psi(j)*h_k(j)/2, 3);
     end
+
+    u_scat(in) = complex(NaN, NaN);
     time_plot = toc;
     times = [time_assembling, time_lin_sist, time_plot];
 end

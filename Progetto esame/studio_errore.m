@@ -23,7 +23,7 @@ for s = 1:length(N)
     times(s, :) = time;
 end
 
-loglog(N, Err, LineWidth=2)
+loglog(N, Err, 'bo-', LineWidth=2)
 grid on
 hold on
 title("Error", Interpreter="latex")
@@ -31,7 +31,7 @@ xlabel("Degrees of freedom", Interpreter="latex")
 ylabel("Error", Interpreter="latex")
 
 figure; 
-semilogx(N, times(:, 3), LineWidth=2)
+semilogx(N, times(:, 3), 'bo-', LineWidth=2)
 grid on
 hold on
 title("Plotting time", Interpreter="latex")

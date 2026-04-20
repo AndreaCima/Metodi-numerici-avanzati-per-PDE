@@ -4,7 +4,7 @@ clear; clc; close all;
 v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
 N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
-x0 = 1 + 1i;
+x0 = .1 + .1i;
 x_lim = [real(x0)-2,  real(x0)+2]; 
 y_lim = [imag(x0)-2, imag(x0)+2];
 

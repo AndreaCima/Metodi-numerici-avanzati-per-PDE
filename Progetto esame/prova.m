@@ -72,8 +72,8 @@ A = zeros(N, N);
 for j = 1:N
     y_q = p_k + (h_k/2) * (xq_off_diag.'+1) .* tau_k;
     r = abs(x_k(j)-y_q);
-    integrand2 = besselh(0, 1, k*r);
-    A(j, :) = sum((1i/4) * integrand2 .* h_k/2 * wq_off_diag, 2);
+    integrand = besselh(0, 1, k*r);
+    A(j, :) = sum((1i/4) * integrand .* h_k/2 * wq_off_diag, 2);
 end
 % fix the diagonal of A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
@@ -101,33 +101,30 @@ u_scat = zeros(size(Z));
 in = inpolygon(X, Y, real(v), imag(v));
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
-for j = 1:numel(Z)
-    if ~in(j)
-        y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
-        r = abs(Z(j)-y_q);
-        integrand = besselh(0, 1, k*r);
-        u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
-    end
-end
-
-% for j = 1:N
-%     y_q = p_k(j) +  h_k(j)/2 * (xq_plot +1)  * tau_k(j);
-%     y_q = reshape(y_q, 1, 1, 5);
-%     r = abs(Z - y_q);
-%     % calcolare integranda e sommare i contributi su tutti gli elementi del
-%     % polingono
-% 
-%   
-%     a = Z .* (reshape(xq_plot.'+1, 1, 1, n_gauss_pts_plot)*h_k(j)*tau_k(j) + p_k(j));
-% 
-% 
+% for j = 1:numel(Z)
+%     if ~in(j)
+%         y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
+%         r = abs(Z(j)-y_q);
+%         integrand = besselh(0, 1, k*r);
+%         u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
+%     end
 % end
 
+for j = 1:N
+    y_q = p_k(j) +  h_k(j)/2 * (xq_plot +1)  * tau_k(j);
+    y_q = reshape(y_q, 1, 1, n_gauss_pts_plot);
+    r = abs(Z - y_q);
+
+    integrand = besselh(0, 1, k*r);
+
+    u_scat = u_scat + sum( (1i/4)  * integrand .* reshape(wq_plot, 1, 1, n_gauss_pts_plot) * psi(j)*h_k(j)/2, 3);
+end
 time_plot = toc;
 
 u_inc_grid = u_inc(Z);
 u_tot = u_scat + u_inc_grid;
 
+% Setting NaN inside the polygon
 u_tot(in) = complex(NaN, NaN);
 u_inc_grid(in) = complex(NaN, NaN);
 u_scat(in) = complex(NaN, NaN);
