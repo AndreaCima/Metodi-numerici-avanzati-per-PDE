@@ -4,13 +4,13 @@ clear; clc; close all;
 v = 0.5*[-1+1i, -1-1i, 1-1i 1+1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
 N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
-x_lim = [-2 2]; 
-y_lim = [-2 2];
+x_lim = [-1.5 1.5]; 
+y_lim = [-1.5 1.5];
 theta = -pi/4;
 n_gauss_pts_plot = 5;
 n_gauss_pts_off_diag = 4;
 n_gauss_pts_on_diag = 10;
-n_points_plot = 200;
+n_points_plot = 150;
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
 % Geometry
@@ -92,9 +92,9 @@ time_lin_sist = toc;
 
 % Plot the solution
 tic
-x_plot = linspace(x_lim(1), x_lim(2), n_points_plot);
-y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
-[X, Y] = meshgrid(x_plot, y_plot);
+x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
+y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
+[X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1));
 Z = X + 1i*Y;
 
 u_scat = zeros(size(Z));
@@ -102,9 +102,7 @@ in = inpolygon(X, Y, real(v), imag(v));
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
 for j = 1:numel(Z)
-    if in(j)
-        u_scat(j) = NaN; % inside the polygon
-    else
+    if ~in(j)
         y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
         r = abs(Z(j)-y_q);
         integrand = besselh(0, 1, k*r);
@@ -114,18 +112,21 @@ end
 time_plot = toc;
 
 u_inc_grid = u_inc(Z);
-u_inc_grid(in) = NaN;
 u_tot = u_scat + u_inc_grid;
+
+u_tot(in) = NaN;
+u_inc_grid(in) = NaN;
+u_scat(in) = NaN;
 figure;
-pcolor(X, Y, real(u_scat)); shading flat; axis square
+pcolor(X, Y, real(u_scat)); shading flat; axis square; axis off
 title("$u_{scat}$", Interpreter="latex")
 
 figure;
-pcolor(X, Y, real(u_inc_grid)); shading flat; axis square
+pcolor(X, Y, real(u_inc_grid)); shading flat; axis square; axis off
 title("$u_{inc}$", Interpreter="latex")
 
 figure ;
-pcolor(X, Y, real(u_tot)); shading flat; axis square
+pcolor(X, Y, real(u_tot)); shading flat; axis square; axis off
 title("$u_{tot}$", Interpreter="latex")
 
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)

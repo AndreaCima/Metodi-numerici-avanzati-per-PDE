@@ -1,16 +1,16 @@
 clear; clc; close all; 
 
 % Parameters
-v = 0.5*[-1+1i, -1-1i, 1-1i, 1+1i]; % vertices of \Gamma (counterclockwise)
+v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
-N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
-x_lim = [-2 2]; 
-y_lim = [-2 2];
-theta = -pi/4;
+N = 100; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
+x_lim = [-1.5 1.5]; 
+y_lim = [-1.5 1.5];
+theta = pi/3;
 n_gauss_pts_plot = 5;
-n_gauss_pts_off_diag = 4;
-n_gauss_pts_on_diag = 10;
-n_points_plot = 200;
+n_gauss_pts_off_diag = 5;
+n_gauss_pts_on_diag = 20;
+n_points_plot = 150;
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
 % Geometry
@@ -75,7 +75,6 @@ for j = 1:N
     integrand2 = besselh(0, 1, k*r);
     A(j, :) = sum((1i/4) * integrand2 .* h_k/2 * wq_off_diag, 2);
 end
-
 % fix the diagonal of A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
 for j = 1:N
@@ -93,57 +92,84 @@ time_lin_sist = toc;
 
 % Plot the solution
 tic
-x_plot = linspace(x_lim(1), x_lim(2), n_points_plot);
-y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
-[X, Y] = meshgrid(x_plot, y_plot);
+x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
+y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
+[X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1));
 Z = X + 1i*Y;
 
 u_scat = zeros(size(Z));
 in = inpolygon(X, Y, real(v), imag(v));
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
-% Prime tentativo di vettorializzazione (fallito per ora)
-% y_q_all = [];
-% for m = 1:N
-%     y_q_all = [y_q_all; p_k(m) + (h_k(m)/2) * (xq_plot+1) * tau_k(m)];
-% end
-% 
-% for j = 1:numel(Z)
-%     if in(j)
-%         u_scat(j) = NaN;
-%     end
-%     r = abs(Z(j)-y_q_all);
-%     integrand = besselh(0, 1, k*r);
-%     u_scat(j) = (1i / 4) * psi(m) * (h_k(m)/2)* (wq_plot.' * integrand);
-% end
-
-
 for j = 1:numel(Z)
-    if in(j)
-        u_scat(j) = NaN; % inside the polygon
-    else
+    if ~in(j)
         y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
         r = abs(Z(j)-y_q);
         integrand = besselh(0, 1, k*r);
         u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
     end
 end
+
+% for j = 1:N
+%     y_q = p_k(j) +  h_k(j)/2 * (xq_plot +1)  * tau_k(j);
+%     y_q = reshape(y_q, 1, 1, 5);
+%     r = abs(Z - y_q);
+%     % calcolare integranda e sommare i contributi su tutti gli elementi del
+%     % polingono
+% 
+%   
+%     a = Z .* (reshape(xq_plot.'+1, 1, 1, n_gauss_pts_plot)*h_k(j)*tau_k(j) + p_k(j));
+% 
+% 
+% end
+
 time_plot = toc;
 
 u_inc_grid = u_inc(Z);
-u_inc_grid(in) = NaN;
 u_tot = u_scat + u_inc_grid;
-figure;
-pcolor(X, Y, real(u_scat)); shading flat; axis square
-title("$u_{scat}$", Interpreter="latex")
 
-figure;
-pcolor(X, Y, real(u_inc_grid)); shading flat; axis square
-title("$u_{inc}$", Interpreter="latex")
+u_tot(in) = complex(NaN, NaN);
+u_inc_grid(in) = complex(NaN, NaN);
+u_scat(in) = complex(NaN, NaN);
 
-figure ;
-pcolor(X, Y, real(u_tot)); shading flat; axis square
-title("$u_{tot}$", Interpreter="latex")
+% u_inc
+figure; 
+pcolor(X,Y,real(u_inc_grid)); shading flat; axis equal; axis off
+title('$\mathcal{R}u_{inc}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_inc_grid)); shading flat; axis equal; axis off
+title('$\mathcal{I}u_{inc}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_inc_grid)); shading flat; axis equal; colormap(hot); axis off
+title('$|u_{inc}|$',Interpreter='latex')
+
+% u_scat
+figure; 
+pcolor(X,Y,real(u_scat)); shading flat; axis equal; axis off
+title('$\mathcal{R}u_{scat}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_scat)); shading flat; axis equal; axis off
+title('$\mathcal{I}u_{scat}$', Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_scat)); shading flat; colormap(hot); axis equal; axis off
+title('$|u_{scat}|$',Interpreter='latex')
+
+% u_tot
+figure; 
+pcolor(X,Y,real(u_tot)); shading flat; axis equal; axis off
+title('$\mathcal{R}u_{tot}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_tot)); shading flat; axis equal; axis off
+title('$\mathcal{I}u_{tot}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_tot)); shading flat; axis equal; colormap(hot); axis off
+title('$|u_{tot}|$',Interpreter='latex')
 
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)

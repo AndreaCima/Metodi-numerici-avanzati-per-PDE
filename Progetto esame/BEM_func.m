@@ -92,9 +92,9 @@ function [u_scat, times, h_k] = BEM_func(N)
     
     % Plot the solution
     tic
-    x_plot = linspace(x_lim(1), x_lim(2), n_points_plot);
-    y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
-    [X, Y] = meshgrid(x_plot, y_plot);
+    x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
+    y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
+    [X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1)); % per fare il confronoto con MPSpack
     Z = X + 1i*Y;
     
     u_scat = zeros(size(Z));
