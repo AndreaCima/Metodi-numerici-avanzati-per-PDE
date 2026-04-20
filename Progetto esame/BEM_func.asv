@@ -38,14 +38,32 @@ function [u_scat, times, h_k] = BEM_func(N)
     end
     x_k = [x_k{:}].'; 
     p_k = [p_k{:}].'; 
-    
-    % delete the edges of Gamma (where diff(p_k)=0)
+    % delete the edges of Gamma (where diff(p_k)=0. I mantain th first one st p_0 = p_N
     p_k = p_k(diff(p_k) ~= 0); 
     h_k = [h_k{:}].';
     tau_k = [tau_k{:}].';
     
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%% Assembling A and F%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % plot \Gamma TO REMOVE AT THE END
+    % figure;
+    % plot(real(p_k), imag(p_k), 'k')
+    % hold on
+    % scatter(real(x_k), imag(x_k), 20, 'filled', 'ro')
+    % scatter(real(p_k), imag(p_k), 20, 'filled', 'b')
+    % xlim(x_lim)
+    % ylim(y_lim)
+    % grid on
+    
+    % plot u_inc # TO REMOVE AT THE END
+    % figure;
+    % [x_plot_inc, y_plot_inc] = meshgrid(linspace(-2,2,200), linspace(-2,2,200));
+    % u_inc_plot = u_inc(x_plot_inc + 1i*y_plot_inc);
+    % pcolor(x_plot_inc, y_plot_inc, real(u_inc_plot)); shading flat % eventally modify in imag(U)
+    % title('$u_{inc}$', Interpreter='latex')
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Assembling A and F
     tic
     F = -u_inc(x_k);
     
@@ -67,12 +85,12 @@ function [u_scat, times, h_k] = BEM_func(N)
     end
     time_assembling = toc;
     
-    %%%%%%%%%%%%%%%%%%% Solve the linear system %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Solve the linear system
     tic
     psi = A\F;
     time_lin_sist = toc; 
     
-    %%%%%%%%%%%%%%%%%% Plot the solution %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%% Plot the solution %%%%%%%%%%%%%%%%%%%%%%%%
 
     x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
     y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);

@@ -70,18 +70,18 @@ F = -u_inc(x_k);
 A = zeros(N, N);
 [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
 for j = 1:N
-    y_q = p_k + (h_k/2) * (xq_off_diag.'+1) .* tau_k;
+    y_q = p_k + h_k * xq_off_diag.' .* tau_k;
     r = abs(x_k(j)-y_q);
     integrand2 = besselh(0, 1, k*r);
-    A(j, :) = sum((1i/4) * integrand2 .* h_k/2 * wq_off_diag, 2);
+    A(j, :) = sum((1i/4) * integrand2 .* h_k * wq_off_diag, 2);
 end
 % fix the diagonal of A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
 for j = 1:N
-    y_q = (h_k(j)/4)*(xq_on_diag+1);
+    y_q = h_k(j) * xq_on_diag;
    
     integrand = besselh(0, 1, k*y_q);
-    A(j, j) = (1i/2)*(h_k(j)/4)*wq_on_diag.'*integrand;
+    A(j, j) = (1i/2)*(h_k(j)/2)*wq_on_diag.'*integrand;
 end
 time_assembling = toc;
 
@@ -103,10 +103,10 @@ in = inpolygon(X, Y, real(v), imag(v));
 
 for j = 1:numel(Z)
     if ~in(j)
-        y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
+        y_q = p_k + (h_k * xq_plot.') .* tau_k;
         r = abs(Z(j)-y_q);
         integrand = besselh(0, 1, k*r);
-        u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
+        u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k * wq_plot);
     end
 end
 time_plot = toc;
@@ -134,7 +134,7 @@ fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
 fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
 
 function [x, w] = gaussquad(q)
-% quadrature nodes and weights for the Gauss quadrature on [-1 1]
+% quadrature nodes and weights for the Gauss quadrature on [0 1]
 B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
 [V, D] = eig( diag(B, -1) + diag(B, 1) );
 x = ( diag(D)+1 )/2;

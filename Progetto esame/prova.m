@@ -70,18 +70,19 @@ F = -u_inc(x_k);
 A = zeros(N, N);
 [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
 for j = 1:N
-    y_q = p_k + (h_k/2) * (xq_off_diag.'+1) .* tau_k;
+    y_q = p_k + h_k * xq_off_diag.' .* tau_k;
     r = abs(x_k(j)-y_q);
     integrand = besselh(0, 1, k*r);
-    A(j, :) = sum((1i/4) * integrand .* h_k/2 * wq_off_diag, 2);
+    A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
 end
 % fix the diagonal of A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
 for j = 1:N
-    y_q = (h_k(j)/4)*(xq_on_diag+1);
+    y_q = h_k(j)/2 * xq_on_diag;
    
     integrand = besselh(0, 1, k*y_q);
-    A(j, j) = (1i/2)*(h_k(j)/4)*wq_on_diag.'*integrand;
+
+    A(j, j) = (1i/2)*(h_k(j)/2)*wq_on_diag.'*integrand;
 end
 time_assembling = toc;
 
@@ -101,23 +102,15 @@ u_scat = zeros(size(Z));
 in = inpolygon(X, Y, real(v), imag(v));
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
-% for j = 1:numel(Z)
-%     if ~in(j)
-%         y_q = p_k + ((h_k./2) * (xq_plot.'+1)) .* tau_k;
-%         r = abs(Z(j)-y_q);
-%         integrand = besselh(0, 1, k*r);
-%         u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k/2 * wq_plot);
-%     end
-% end
 
 for j = 1:N
-    y_q = p_k(j) +  h_k(j)/2 * (xq_plot +1)  * tau_k(j);
+    y_q = p_k(j) +  h_k(j) * xq_plot * tau_k(j);
     y_q = reshape(y_q, 1, 1, n_gauss_pts_plot);
     r = abs(Z - y_q);
 
     integrand = besselh(0, 1, k*r);
 
-    u_scat = u_scat + sum( (1i/4)  * integrand .* reshape(wq_plot, 1, 1, n_gauss_pts_plot) * psi(j)*h_k(j)/2, 3);
+    u_scat = u_scat + sum( (1i/4)  * integrand .* reshape(wq_plot, 1, 1, n_gauss_pts_plot) * psi(j)*h_k(j), 3);
 end
 time_plot = toc;
 

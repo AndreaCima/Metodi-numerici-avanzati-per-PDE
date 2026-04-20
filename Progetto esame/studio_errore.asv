@@ -51,7 +51,7 @@ ylabel("time (s)", Interpreter="latex")
 %% Confronto con MPSpack
 clear; clc; close all; 
 
-N = 2.^(4:8); % N = 16, 32, ...., 4096
+N = 2.^(4:10); % N = 16, 32, ...., 4096
 T = load("MPSpackBenchmarkSquareScatt.mat");
 u_ref = T.u;
 

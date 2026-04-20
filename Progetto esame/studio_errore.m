@@ -73,7 +73,7 @@ for s = 1:length(N)
     H(s) = h(1);
 end
 
-p = polyfit(log(H(6:end)), log(Err(6:end)), 1); 
+p = polyfit(log(H(end-4:end)), log(Err(end-4:end)), 1); 
 slope = p(1); % ordine di convergenza
 
 f1 = figure; 
