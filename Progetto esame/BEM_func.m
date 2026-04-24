@@ -1,4 +1,4 @@
-function [u_scat, times, h_k] = BEM_func(N)
+function [u_scat, times, mean_h] = BEM_func(N)
     % Parameters
     v = 0.5*[-1+1i, -1-1i, 1-1i, 1+1i]; % vertices of \Gamma (counterclockwise)
     k = 20;
@@ -42,6 +42,7 @@ function [u_scat, times, h_k] = BEM_func(N)
     % delete the edges of Gamma (where diff(p_k)=0)
     p_k = p_k(diff(p_k) ~= 0); 
     h_k = [h_k{:}].';
+    mean_h = mean(h_k);
     tau_k = [tau_k{:}].';
     
     
@@ -67,12 +68,12 @@ function [u_scat, times, h_k] = BEM_func(N)
     end
     time_assembling = toc;
     
-    %%%%%%%%%%%%%%%%%%% Solve the linear system %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%% Solve the linear system %%%%%%%%%%%%%%%%%%%%%%%
     tic
     psi = A\F;
     time_lin_sist = toc; 
     
-    %%%%%%%%%%%%%%%%%% Plot the solution %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%% Plot the solution %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
     y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
