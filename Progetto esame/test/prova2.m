@@ -1,3 +1,3 @@
 clear; clc; close all;
 
-[u_scat, times] = BEM_func(1000);
+[u_scat, times] = BEM_func(100);

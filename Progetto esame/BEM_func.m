@@ -52,8 +52,9 @@ function [u_scat, times, mean_h] = BEM_func(N)
     
     A = zeros(N, N);
     [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
+    y_q = p_k + h_k * xq_off_diag.' .* tau_k;
+    
     for j = 1:N
-        y_q = p_k + h_k * xq_off_diag.' .* tau_k;
         r = abs(x_k(j)-y_q);
         integrand = besselh(0, 1, k*r);
         A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
@@ -63,7 +64,7 @@ function [u_scat, times, mean_h] = BEM_func(N)
     for j = 1:N
         y_q = h_k(j)/2 * xq_on_diag;
        
-        integrand = besselh(0, 1, k*y_q);
+        integrand = besselh(0, 1, k*y_q);  
         A(j, j) = (1i/2)*(h_k(j)/2)*wq_on_diag.'*integrand;
     end
     time_assembling = toc;

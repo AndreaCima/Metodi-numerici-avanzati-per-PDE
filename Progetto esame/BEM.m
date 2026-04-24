@@ -1,12 +1,12 @@
 clear; clc; close all; 
 
 % Parameters
-v = 0.5*[-1+1i, -1-1i, 1-1i 1+1i]; % vertices of \Gamma (counterclockwise)
+v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
 N = 1000; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
 x_lim = [-1.5 1.5]; 
 y_lim = [-1.5 1.5];
-theta = -pi/4;
+theta = pi/3;
 n_gauss_pts_plot = 5;
 n_gauss_pts_off_diag = 5;
 n_gauss_pts_on_diag = 30;
@@ -69,11 +69,12 @@ F = -u_inc(x_k);
 
 A = zeros(N, N);
 [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
+y_q = p_k + h_k * xq_off_diag.' .* tau_k;
 for j = 1:N
-    y_q = p_k + h_k * xq_off_diag.' .* tau_k;
+    
     r = abs(x_k(j)-y_q);
-    integrand2 = besselh(0, 1, k*r);
-    A(j, :) = sum((1i/4) * integrand2 .* h_k * wq_off_diag, 2);
+    integrand = besselh(0, 1, k*r);
+    A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
 end
 % fix the diagonal of A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
@@ -118,15 +119,15 @@ u_tot(in) = complex(NaN, NaN);
 u_inc_grid(in) = complex(NaN, NaN);
 u_scat(in) = complex(NaN, NaN);
 figure;
-pcolor(X, Y, real(u_scat)); shading flat; axis square; axis off
+pcolor(X, Y, real(u_scat)); shading flat; axis square; axis off; colorbar;
 title("$\mathcal{R}u_{scat}$", Interpreter="latex")
 
 figure;
-pcolor(X, Y, real(u_inc_grid)); shading flat; axis square; axis off
+pcolor(X, Y, real(u_inc_grid)); shading flat; axis square; axis off; colorbar;
 title("$\mathcal{R}u_{inc}$", Interpreter="latex")
 
 figure ;
-pcolor(X, Y, real(u_tot)); shading flat; axis square; axis off
+pcolor(X, Y, real(u_tot)); shading flat; axis square; axis off; colorbar;
 title("$\mathcal{R}u_{tot}$", Interpreter="latex")
 
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
