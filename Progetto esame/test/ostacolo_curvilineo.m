@@ -16,14 +16,14 @@ obs_der_abs = @(t) abs(obs_der(t));
 
 
 k = 20;
-N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
+N = 500; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
 x_lim = [-2 2]; 
 y_lim = [-2 2];
 theta = pi;
 n_gauss_pts_plot = 5;
 n_gauss_pts_off_diag = 5;
 n_gauss_pts_on_diag = 30;
-n_points_plot = 150;
+n_points_plot = 300;
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,8 +87,6 @@ y_q = obs(t(1:N) + dt*xq_plot.');
 
 % xq_plot = reshape(xq_plot, 1, 1, n_gauss_pts_plot);
 % wq_plot = reshape(wq_plot, 1, 1, n_gauss_pts_plot);
-
-
 
 for j = 1:numel(Z)
     if ~in(j)
