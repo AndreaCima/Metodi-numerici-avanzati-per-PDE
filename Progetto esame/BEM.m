@@ -3,7 +3,7 @@ clear; clc; close all;
 % Parameters
 v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
-N = 1000; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
+N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
 x_lim = [-1.5 1.5]; 
 y_lim = [-1.5 1.5];
 theta = pi/3;
@@ -118,17 +118,46 @@ u_tot = u_scat + u_inc_grid;
 u_tot(in) = complex(NaN, NaN);
 u_inc_grid(in) = complex(NaN, NaN);
 u_scat(in) = complex(NaN, NaN);
-figure;
-pcolor(X, Y, real(u_scat)); shading flat; axis square; axis off; colorbar;
-title("$\mathcal{R}u_{scat}$", Interpreter="latex")
 
-figure;
-pcolor(X, Y, real(u_inc_grid)); shading flat; axis square; axis off; colorbar;
-title("$\mathcal{R}u_{inc}$", Interpreter="latex")
+% u_inc
+figure; 
+pcolor(X,Y,real(u_inc_grid)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{R}u_{inc}$',Interpreter='latex')
 
-figure ;
-pcolor(X, Y, real(u_tot)); shading flat; axis square; axis off; colorbar;
-title("$\mathcal{R}u_{tot}$", Interpreter="latex")
+figure; 
+pcolor(X,Y,imag(u_inc_grid)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{I}u_{inc}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_inc_grid)); shading flat; axis equal; colormap(hot); axis off; colorbar
+title('$|u_{inc}|$',Interpreter='latex')
+
+% u_scat
+figure; 
+pcolor(X,Y,real(u_scat)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{R}u_{scat}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_scat)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{I}u_{scat}$', Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_scat)); shading flat; colormap(hot); axis equal; axis off; colorbar
+title('$|u_{scat}|$',Interpreter='latex')
+
+% u_tot
+figure; 
+pcolor(X,Y,real(u_tot)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{R}u_{tot}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_tot)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{I}u_{tot}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_tot)); shading flat; axis equal; colormap(hot); axis off; colorbar
+title('$|u_{tot}|$',Interpreter='latex')
+
 
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
