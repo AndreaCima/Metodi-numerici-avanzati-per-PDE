@@ -6,13 +6,13 @@ clear; clc; close all;
 z0 = 0+0*1i; % centro della circonferenza
 R = 1; % raggio
 
-% obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
-% obs_der = @(t) 1i*R*exp(1i*t); % derivata
-% obs_der_abs = @(t) abs(1i*R*exp(1i*t)); % abs(derivata), mi serve per sapere il valore del perimetro
+obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
+obs_der = @(t) 1i*R*exp(1i*t); % derivata
+obs_der_abs = @(t) abs(1i*R*exp(1i*t)); % abs(derivata), mi serve per sapere il valore del perimetro
 
-obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
-obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
-obs_der_abs = @(t) abs(obs_der(t));
+% obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
+% obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
+% obs_der_abs = @(t) abs(obs_der(t));
 
 
 k = 20;

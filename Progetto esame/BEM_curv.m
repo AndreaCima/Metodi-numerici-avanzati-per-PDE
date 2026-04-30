@@ -1,10 +1,9 @@
 function [u_scat, times, h_k] = BEM_curv(N)
 % metodo BEM con onda piana (per il momento) che sbatte contro ostacolo curvilineo
-clear; clc; close all; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-z0 = 0+0*1i; % centro della circonferenza
+z0 = 0+0*0i; % centro della circonferenza
 R = 1; % raggio
 
 obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
