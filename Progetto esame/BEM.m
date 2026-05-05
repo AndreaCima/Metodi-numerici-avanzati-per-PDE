@@ -38,7 +38,7 @@ for i = 1:n_sides
 end
 x_k = [x_k{:}].'; 
 p_k = [p_k{:}].'; 
-% delete the edges of Gamma (where diff(p_k)=0. I mantain th first one st p_0 = p_N
+
 p_k = p_k(diff(p_k) ~= 0); 
 h_k = [h_k{:}].';
 tau_k = [tau_k{:}].';
@@ -80,7 +80,6 @@ end
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
 for j = 1:N
     y_q = h_k(j) * xq_on_diag;
-   
     integrand = besselh(0, 1, k*y_q);
     A(j, j) = (1i/2)*(h_k(j)/2)*wq_on_diag.'*integrand;
 end

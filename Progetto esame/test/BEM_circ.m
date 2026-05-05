@@ -41,8 +41,8 @@ for i = 1:n_sides
 end
 x_k = [x_k{:}].'; 
 p_k = [p_k{:}].'; 
-% delete the edges of Gamma (where diff(p_k)=0. I mantain th first one st p_0 = p_N
-p_k = p_k([true; diff(p_k) ~= 0]); 
+
+p_k = p_k(diff(p_k) ~= 0); 
 h_k = [h_k{:}].';
 tau_k = [tau_k{:}].';
 
@@ -123,20 +123,46 @@ end
 time_plot = toc;
 
 u_inc_grid = u_inc(Z);
-u_inc_grid(in) = NaN;
+u_inc_grid(in) = complex(NaN, NaN);
 u_tot = u_scat + u_inc_grid;
-figure;
-pcolor(X, Y, real(u_scat)); shading flat
-title("$u_{scat}$", Interpreter="latex")
+% u_inc
+figure; 
+pcolor(X,Y,real(u_inc_grid)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{R}u_{inc}$',Interpreter='latex')
 
-figure;
-pcolor(X, Y, real(u_inc_grid)); shading flat
-title("$u_{inc}$", Interpreter="latex")
+figure; 
+pcolor(X,Y,imag(u_inc_grid)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{I}u_{inc}$',Interpreter='latex')
 
-figure ;
-pcolor(X, Y, real(u_tot)); shading flat
-title("$u_{tot}$", Interpreter="latex")
+figure; 
+pcolor(X,Y,abs(u_inc_grid)); shading flat; axis equal; colormap(hot); axis off; colorbar
+title('$|u_{inc}|$',Interpreter='latex')
 
+% u_scat
+figure; 
+pcolor(X,Y,real(u_scat)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{R}u_{scat}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_scat)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{I}u_{scat}$', Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_scat)); shading flat; colormap(hot); axis equal; axis off; colorbar
+title('$|u_{scat}|$',Interpreter='latex')
+
+% u_tot
+figure; 
+pcolor(X,Y,real(u_tot)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{R}u_{tot}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,imag(u_tot)); shading flat; axis equal; axis off; colorbar
+title('$\mathcal{I}u_{tot}$',Interpreter='latex')
+
+figure; 
+pcolor(X,Y,abs(u_tot)); shading flat; axis equal; colormap(hot); axis off; colorbar
+title('$|u_{tot}|$',Interpreter='latex')
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
 fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
