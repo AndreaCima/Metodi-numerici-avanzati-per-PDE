@@ -1,4 +1,4 @@
-% metodo BEM con onda piana (per il momento) che urta contro ostacolo curvilineo
+% metodo BEM con onda piana che urta contro ostacolo curvilineo
 clear; clc; close all; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

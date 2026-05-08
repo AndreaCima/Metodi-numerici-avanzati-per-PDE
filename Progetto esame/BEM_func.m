@@ -19,7 +19,7 @@ function [u_scat, times, mean_h] = BEM_func(N)
     perimeter = sum(abs(v - [v(2:end) v(1)]));
     side_length = abs(diff(v));
     side_percent = side_length./perimeter;
-    assert(sum(side_percent)==1);
+    assert(abs( sum(side_percent)-1 ) < 1e-4);
     
     N_side = ceil(N*side_percent);
     N = sum(N_side); % new N
