@@ -3,7 +3,7 @@
 clear; clc; close all; 
 
 k = 20; 
-N = 4*k;
+N = 8*k;
 
 v = [1+0*1i, 0+1i, 0+0*1i]; % vertici (senso antiorario)
 
