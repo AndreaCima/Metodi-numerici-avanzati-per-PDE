@@ -1,5 +1,4 @@
-% Far field pattern di un'onda piana che rimbalza contro una circonferenza
-% di raggio R
+% Far field pattern di un'onda piana che rimbalza contro un poligono
 clear; clc; close all; 
 
 k = 20; 
