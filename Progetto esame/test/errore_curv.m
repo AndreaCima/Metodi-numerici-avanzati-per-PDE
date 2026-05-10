@@ -2,10 +2,11 @@
 clear; clc; close all; 
 
 
-L_max = 100;
+
 R = 1; % raggio circonferenza
 z0 = 0 + 0*1i; 
 k = 20; 
+L_max = ceil(k*R)+10;
 theta = pi; 
 d = exp(1i*theta);
 
