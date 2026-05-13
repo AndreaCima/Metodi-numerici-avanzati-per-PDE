@@ -1,4 +1,5 @@
 % far field di un'onda piana che rimbalza contro una circonferenza 
+% calcoli fatti su un foglio di brutta, ho fatto la foto
 clear; clc; close all; 
 
 R = 1; % raggio circonferenza

@@ -1,4 +1,5 @@
 % Far field pattern di un'onda piana che rimbalza contro un poligono
+% formula a pag 73 delle dispense
 clear; clc; close all; 
 
 k = 20; 
