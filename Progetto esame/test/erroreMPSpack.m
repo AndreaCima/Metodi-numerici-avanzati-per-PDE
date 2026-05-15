@@ -54,6 +54,9 @@ clear; clc; close all;
 N = 2.^(4:12); % N = 16, 32, ...., 4096
 T = load("MPSpackBenchmarkSquareScatt.mat");
 u_ref = T.u;
+k = 20;
+theta = -pi/4;
+v = 0.5* [1+1i, -1+1i, -1-1i, 1-1i];
 
 mask = linspace(-1.5, 1.5, 151);
 mask = mask(1:end-1);
@@ -66,7 +69,7 @@ H = zeros(length(N), 1);
 
 for s = 1:length(N)
     fprintf("N = %d ", N(s))
-    [u_scat, time, h] = BEM_func(N(s));
+    [u_scat, time, h] = BEM_func(N(s), k, v, theta);
     fprintf("\t h = %f\n", h)
     Err(s) = norm(u_scat(mask)-u_ref(mask), 2) / norm(u_ref(mask), 2);
     times(s, :) = time;
