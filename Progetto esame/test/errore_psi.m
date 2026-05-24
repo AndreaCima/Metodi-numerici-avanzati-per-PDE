@@ -4,7 +4,7 @@
 clear; clc; close all; 
 
 
-% Parameters
+% parametri
 v = 0.5*[-1+1i, -1-1i, 1-1i, 1+1i]; 
 k = 20;
 n_max = 12;
@@ -54,8 +54,10 @@ title("Error vs Ndof", Interpreter="latex")
 
 figure; 
 loglog(H, Err, 'bo-', LineWidth=2)
-grid on;
+grid on; hold on;
+loglog(H, 10*H.^(2/3), 'b--') % da sistemare
 title("Error vs mesh size", Interpreter="latex")
+
 
 
 
