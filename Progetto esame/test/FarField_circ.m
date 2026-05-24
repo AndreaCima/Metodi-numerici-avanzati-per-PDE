@@ -36,7 +36,7 @@ for l = -L_max:L_max
     u_scat = u_scat - (1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) .* besselh(l, 1, k*abs(Z)) .* (Z./(d*abs(Z))).^l;
     u_coeff(l+L_max+1) = (1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) * (1/d)^l;
     farField = farField + sqrt( 2/(pi*k) ) * exp(-pi*1i/4) * u_coeff(l+L_max+1) * exp(-l*pi*1i/2) * exp(1i*l*(theta));
-    % se sostituisco nella riga sopra theta + pi al posot di theta e
+    % se sostituisco nella riga sopra theta + pi al posto di theta e
     % considero l'angolo di incidenza dell'onda come theta + pi ho lo
     % stesso plot in polarplot che se non mettessi pi in entrambi i posti
 end
