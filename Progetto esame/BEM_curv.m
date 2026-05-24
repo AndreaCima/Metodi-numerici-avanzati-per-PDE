@@ -1,22 +1,22 @@
 function [u_scat, times, h_k] = BEM_curv(N)
-% metodo BEM con onda piana (per il momento) che sbatte contro ostacolo curvilineo
+% metodo BEM con onda piana (per il momento) che incontra ostacolo curvilineo
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Parameters
-z0 = 0+0*0i; % centro della circonferenza
+%%%%%%%%%%%%%%%%%%%%%%%%%%%  PARAMETRI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% circonferenza
+z0 = 0+0*0i; % centro 
 R = 1; % raggio
-
-obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
+obs = @(t) z0 + R*exp(1i*t); % ostacolo
 obs_der = @(t) 1i*R*exp(1i*t); % derivata
-obs_der_abs = @(t) abs(obs_der(t)); % abs(derivata), mi serve per sapere il valore del perimetro
+obs_der_abs = @(t) abs(obs_der(t)); % abs(derivata), mi serve per il valore del perimetro
 
+% ostacolo kite
 % obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
 % obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
 % obs_der_abs = @(t) abs(obs_der(t));
 
 
 k = 20;
-% N = 500; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
 x_lim = [-2 2]; 
 y_lim = [-2 2];
 theta = pi;
@@ -26,19 +26,13 @@ n_gauss_pts_on_diag = 30;
 n_points_plot = 300;
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Geometry
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GEOMETRIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t = linspace(0, 2*pi, N+1)';
 L = integral(obs_der_abs, 0, 2*pi); % perimetro
 h_k = L/N; % ampiezza elementi
-% p_k = obs(t);
-% p_k = p_k(1:N);
 x_k = obs( (t(1:N) + t(2:N+1)) / 2 ); % punti medi
-% tau_k = obs_der(t(1:N));
-% tau_k = tau_k./abs(tau_k);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Assemblaggio A e F
+%%%%%%%%%%%%%%%%%%%%%%%%%%  ASSEMBLAGGIO  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
 F = -u_inc(x_k);
 
@@ -55,8 +49,7 @@ for j = 1:N
     A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
 end
 
-% fix the diagonal of A
-
+% fix diagonale di A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
 y_q = h_k/2 * xq_on_diag;
 
@@ -67,14 +60,13 @@ end
 
 time_assembling = toc;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%  SISTEMA LINEARE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sistema lineare
 tic
 psi = A\F; 
 time_lin_sist = toc; 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plot
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PLOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
 
 x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
@@ -113,14 +105,6 @@ u_scat(in) = complex(NaN, NaN);
 
 end
 
-function [x, w] = gaussquad(q)
-% nodi e pesi di quadratura di Gauss su [0 1]
-B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
-[V, D] = eig( diag(B, -1) + diag(B, 1) );
-x = ( diag(D)+1 )/2;
-w = ( V(1, :).*V(1, :) )';
-
-end
 
 
 
