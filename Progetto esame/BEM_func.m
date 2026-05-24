@@ -46,7 +46,7 @@ function [u_scat, times, mean_h] = BEM_func(N, k, v, theta)
     tau_k = [tau_k{:}].';
     
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%% Assembling A and F%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%% Assembling A and F %%%%%%%%%%%%%%%%%%%%%%%%%%
     tic
     F = -u_inc(x_k);
     
