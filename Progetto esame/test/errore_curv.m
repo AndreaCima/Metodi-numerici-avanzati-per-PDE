@@ -42,7 +42,7 @@ Err = zeros(length(N), 1);
 times = zeros(length(N), 3);
 
 for s = 1:length(N)
-    
+
     t = linspace(0, 2*pi, N(s)+1)';
     xv = real(obs(t(1:N(s))));
     yv = imag(obs(t(1:N(s))));
@@ -73,18 +73,33 @@ xlabel("Degrees of freedom", Interpreter="latex")
 ylabel("Error", Interpreter="latex")
 
 f2=figure; 
-loglog(H, Err, 'bo-', LineWidth=2)
+loglog(H, Err, 'bo-', LineWidth=2, DisplayName='Err')
 grid on 
 hold on
 title("Error vs mesh size", Interpreter="latex")
 xlabel("Mesh size", Interpreter="latex")
 ylabel("Error", Interpreter="latex")
 
+x_pendenza = [1e-3, 1e-2];
+y_pendenza = x_pendenza.^slope;
+
+livello_dati = Err(end);
+livello_retta = y_pendenza(1);
+offset = (livello_dati / livello_retta) * 0.5;
+
+y_pendenza = y_pendenza * offset;
+
+testo_slope = ['Slope: ', num2str(slope, '%.2f')];
+plot(x_pendenza, y_pendenza*1e-3, '--k', LineWidth=1.5, DisplayName=testo_slope);
+legend(Interpreter='latex');
+
+
 f3 = figure; 
 loglog(N, times(:, 3), 'bo-', LineWidth=2)
 grid on
 hold on
 title("Plotting time", Interpreter="latex")
-xlabel("Degrees of freedom", Interpreter="latex")
-ylabel("time (s)", Interpreter="latex")
+
+
+
 
