@@ -165,15 +165,3 @@ fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
 fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
 
-function [x, w] = gaussquad(q)
-% quadrature nodes and weights for the Gauss quadrature on [-1 1]
-B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
-[V, D] = eig( diag(B, -1) + diag(B, 1) );
-x = ( diag(D)+1 )/2;
-w = ( V(1, :).*V(1, :) )';
-
-end
-
-
-
-
