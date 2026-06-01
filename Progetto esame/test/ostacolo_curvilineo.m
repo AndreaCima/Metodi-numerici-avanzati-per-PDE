@@ -6,13 +6,13 @@ clear; clc; close all;
 z0 = 0+0*1i; % centro della circonferenza
 R = 1; % raggio
 
-% obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
-% obs_der = @(t) 1i*R*exp(1i*t); % derivata
-% obs_der_abs = @(t) abs(1i*R*exp(1i*t)); % abs(derivata), mi serve per sapere il valore del perimetro
+obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
+obs_der = @(t) 1i*R*exp(1i*t); % derivata
+obs_der_abs = @(t) abs(1i*R*exp(1i*t)); % abs(derivata), mi serve per sapere il valore del perimetro
 
-obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
-obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
-obs_der_abs = @(t) abs(obs_der(t));
+% obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
+% obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
+% obs_der_abs = @(t) abs(obs_der(t));
 
 
 k = 20;
@@ -151,15 +151,6 @@ title('$|u_{tot}|$',Interpreter='latex')
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
 fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
-
-function [x, w] = gaussquad(q)
-% nodi e pesi di quadratura di Gauss su [0 1]
-B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
-[V, D] = eig( diag(B, -1) + diag(B, 1) );
-x = ( diag(D)+1 )/2;
-w = ( V(1, :).*V(1, :) )';
-
-end
 
 
 
