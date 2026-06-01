@@ -4,7 +4,7 @@ clear; clc; close all;
 
 R = 1; % raggio circonferenza
 z0 = 0 + 0*1i; % centro circonferenza
-k = 5; 
+k = 20; 
 L_max = ceil(k*R)+10;
 theta = pi/4; 
 d = exp(1i*theta);
@@ -55,7 +55,7 @@ hold on
 grid on
 % plot(-L_max:L_max, imag(u_coeff), LineWidth=2, DisplayName="parte immaginaria")
 plot(-L_max:L_max, abs(u_coeff), LineWidth=2, DisplayName="valore assoluto")
-title("Valore assoluto dei coefficieti del campo scatterato", Interpreter="latex")
+% title("Valore assoluto dei coefficieti del campo scatterato", Interpreter="latex")
 % legend(Location="bestoutside")
 
 % Guardando i plot dei valori assoluti dei coefficienti di u_scat si vede
