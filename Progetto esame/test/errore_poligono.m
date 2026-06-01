@@ -49,7 +49,7 @@ grid on;
 title("Error vs Ndof", Interpreter="latex")
 
 figure; 
-loglog(N, Err, 'bo-', LineWidth=2)
+loglog(H, Err, 'bo-', LineWidth=2)
 grid on;
 title("Error vs mesh size", Interpreter="latex")
 
