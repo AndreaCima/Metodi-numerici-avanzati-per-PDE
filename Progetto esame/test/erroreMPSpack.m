@@ -26,7 +26,7 @@ for s = 1:length(N)
     H(s) = h;
 end
 
-p = polyfit(log(H(end-4:end)), log(Err(end-4:end)), 1); 
+p = polyfit(log(H(end-3:end)), log(Err(end-3:end)), 1); 
 slope = p(1); % ordine di convergenza
 
 f1 = figure; 
@@ -38,12 +38,17 @@ xlabel("Degrees of freedom", Interpreter="latex")
 ylabel("Error", Interpreter="latex")
 
 f2=figure; 
-loglog(H, Err, 'bo-', LineWidth=2)
-grid on 
+loglog(H, Err, 'bo-', LineWidth=2, DisplayName='Collocazione')
 hold on
+loglog(logspace(-3, -2, 200), logspace(-3, -2, 200).^(4/3), 'k--', 'LineWidth', 1.5, DisplayName='$h^{4/3}$')
+legend(Location='northwest', Interpreter='latex')
+grid on 
+
+
 title("Error vs mesh size", Interpreter="latex")
 xlabel("Mesh size", Interpreter="latex")
 ylabel("Error", Interpreter="latex")
+
 
 f3 = figure; 
 loglog(N, times(:, 3), 'bo-', LineWidth=2)
