@@ -4,7 +4,7 @@ clear; clc; close all;
 v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
 k = 20;
 N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
-x0 = .1 + .1i;
+x0 = .5 + .5i;
 x_lim = [real(x0)-2,  real(x0)+2]; 
 y_lim = [imag(x0)-2, imag(x0)+2];
 
@@ -123,8 +123,12 @@ end
 time_plot = toc;
 
 u_inc_grid = u_inc(Z);
-u_inc_grid(in) = complex(NaN, NaN);
 u_tot = u_scat + u_inc_grid;
+
+u_tot(in) = complex(NaN, NaN);
+u_inc_grid(in) = complex(NaN, NaN);
+u_scat(in) = complex(NaN, NaN);
+
 % u_inc
 figure; 
 pcolor(X,Y,real(u_inc_grid)); shading flat; axis equal; axis off; colorbar
