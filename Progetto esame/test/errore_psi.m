@@ -38,7 +38,7 @@ for s = 1:length(N)
 end
 
 
-p = polyfit(H, Err, 1);
+p = polyfit(log10(H), log10(Err), 1);
 slope = p(1);
 fprintf("Slope = %f\n", slope)
 
@@ -55,7 +55,6 @@ title("Error vs Ndof", Interpreter="latex")
 figure; 
 loglog(H, Err, 'bo-', LineWidth=2)
 grid on; hold on;
-loglog(H, 10*H.^(2/3), 'b--') % da sistemare
 title("Error vs mesh size", Interpreter="latex")
 
 
