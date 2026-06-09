@@ -167,6 +167,7 @@ title('$\mathcal{I}u_{tot}$',Interpreter='latex')
 figure; 
 pcolor(X,Y,abs(u_tot)); shading flat; axis equal; colormap(hot); axis off; colorbar
 title('$|u_{tot}|$',Interpreter='latex')
+
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
 fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
