@@ -14,7 +14,7 @@ n_gauss_pts_off_diag = 4;
 n_gauss_pts_on_diag = 10;
 n_points_plot = 200;
  
-u_inc = @(x) besselh(0,1, k*abs(x - x0)); % sol fondamentale
+u_inc = @(x) (1i/4)*besselh(0,1, k*abs(x - x0)); % sol fondamentale
 
 % Geometry
 v = [v v(1)];
