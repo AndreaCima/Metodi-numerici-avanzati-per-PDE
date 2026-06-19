@@ -5,7 +5,7 @@ clear; clc; close all;
 R = 1; % raggio circonferenza
 z0 = 0 + 0*1i; % centro circonferenza
 k = 20; 
-L_max = ceil(k*R)+10;
+L_max = ceil(k*R)+20;
 theta = pi/4; 
 d = exp(1i*theta);
 
@@ -34,7 +34,10 @@ farField = zeros(size(theta));
 
 for l = -L_max:L_max
     u_scat = u_scat - (1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) .* besselh(l, 1, k*abs(Z)) .* (Z./(d*abs(Z))).^l;
-    u_coeff(l+L_max+1) = (1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) * (1/d)^l;
+    % nei coefficienti sotto c'è un segno meno, ma tanto poi plotto il
+    % valore assoluto, lo metto lo stesso per completezza
+    
+    u_coeff(l+L_max+1) = -(1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) * (1/d)^l; 
     farField = farField + sqrt( 2/(pi*k) ) * exp(-pi*1i/4) * u_coeff(l+L_max+1) * exp(-l*pi*1i/2) * exp(1i*l*(theta));
     % se sostituisco nella riga sopra theta + pi al posto di theta e
     % considero l'angolo di incidenza dell'onda come theta + pi ho lo
@@ -50,13 +53,8 @@ figure;
 pcolor(X, Y, abs(u_scat)); shading flat; colorbar; axis square; axis off; colormap("hot")
 
 figure;
-% plot(-L_max:L_max, real(u_coeff), LineWidth=2, DisplayName="parte reale")
-hold on
+semilogy(-L_max:L_max, abs(u_coeff), LineWidth=2, DisplayName="valore assoluto")
 grid on
-% plot(-L_max:L_max, imag(u_coeff), LineWidth=2, DisplayName="parte immaginaria")
-plot(-L_max:L_max, abs(u_coeff), LineWidth=2, DisplayName="valore assoluto")
-% title("Valore assoluto dei coefficieti del campo scatterato", Interpreter="latex")
-% legend(Location="bestoutside")
 
 % Guardando i plot dei valori assoluti dei coefficienti di u_scat si vede
 % che per valori di \ell \in \mathbb{Z} molto più grandi o più piccoli (in
