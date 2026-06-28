@@ -109,13 +109,6 @@ in = inpolygon(X, Y, real(v), imag(v));
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
 for j = 1:numel(Z)
-    if mod(j, 100)==0
-        clc; 
-        fprintf("%.2f%%\n", j/numel(Z)*100)
-
-%         fprintf("%i su %i \t %.2f%%\n", j, numel(Z), j/numel(Z)*100)
-
-    end
     if ~in(j)
         y_q = p_k + (h_k * xq_plot.') .* tau_k;
         r = abs(Z(j)-y_q);
