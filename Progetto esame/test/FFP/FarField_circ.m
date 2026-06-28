@@ -1,4 +1,4 @@
-% far field di un'onda piana che rimbalza contro una circonferenza 
+% far field di un'onda piana contro una circonferenza 
 % calcoli fatti su un foglio di brutta, ho fatto la foto
 clear; clc; close all; 
 
@@ -21,7 +21,7 @@ x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
 y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
 [X, Y] = meshgrid(x_plot, y_plot);
 Z = X + 1i*Y; 
-mask = (X.^2 + Y.^2 < R); % complementare del disco  di raggio R + 0.25
+mask = (X.^2 + Y.^2 < R); % disco di raggio R 
 
 u_scat = zeros(size(Z));
 
@@ -56,7 +56,7 @@ figure;
 semilogy(-L_max:L_max, abs(u_coeff), LineWidth=2, DisplayName="valore assoluto")
 grid on
 
-% Guardando i plot dei valori assoluti dei coefficienti di u_scat si vede
+% Guardando i plot dei moduli dei coefficienti di u_scat si vede
 % che per valori di \ell \in \mathbb{Z} molto più grandi o più piccoli (in
 % modulo) del valore k*R si hanno coefficienti molto piccoli (in modulo)
 
@@ -64,7 +64,6 @@ figure;
 minFarField = min(log10(abs(farField)));
 
 polarplot(theta, -min(log10(abs(farField))) + log10(abs(farField)), lineWidth = 2)
-disp(minFarField)
 
 
 

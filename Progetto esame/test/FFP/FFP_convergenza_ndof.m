@@ -18,7 +18,7 @@ for s = 1:length(N)
     fprintf('N = %d \t', N(s))
     [FFP, h] = Far_Field(N(s), k, v, theta);
     fprintf('done\n')
-    Err(s) = norm(FFP - FFP_ref, 2);
+    Err(s) = norm(FFP - FFP_ref, 2) / norm(FFP_ref, 2);
     H(s) = h;
 end
 

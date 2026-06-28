@@ -2,10 +2,12 @@
 % formula a pag 73 delle dispense
 clear; clc; close all; 
 
-k = 20; 
-N = 8*k;
+k = 5; 
+% N = 8*k;
+N = 1000;
 
-v = [1+0*1i, 0+1i, 0+0*1i]; % vertici (senso antiorario)
+% v = [1+0*1i, 0+1i, 0+0*1i]; % vertici (senso antiorario)
+v = exp( 1i * (0:999) * 2*pi / 1000 );
 
 theta = pi/3; 
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
@@ -21,6 +23,10 @@ perimeter = sum(abs(v - [v(2:end) v(1)]));
 side_length = abs(diff(v));
 side_percent = side_length./perimeter;
 assert(abs( sum(side_percent)-1 ) < 1e-4);
+
+if max(side_percent) - min(side_percent) < 1e-12
+    side_percent = ones(size(side_percent)) / n_sides;
+end
 
 N_side = ceil(N*side_percent);
 N = sum(N_side); % new N
@@ -75,7 +81,7 @@ psi = A\F;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Far field pattern %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-theta = linspace(0, 2*pi, 360)';
+theta = linspace(0, 2*pi, 360)'; % sovrascrivo il theta che usavo prima 
 d = cos(theta) + 1i*sin(theta);
 
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_farField);
@@ -95,7 +101,6 @@ end
 minFarField = min(log10(abs(farField)));
 
 polarplot(theta, -min(log10(abs(farField))) + log10(abs(farField)), lineWidth = 2)
-disp(minFarField)
 
 
 
