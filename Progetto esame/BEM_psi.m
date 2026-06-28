@@ -19,6 +19,10 @@ function [psi, times, mean_h] = BEM_psi(N, k, v, theta)
     side_length = abs(diff(v));
     side_percent = side_length./perimeter;
     assert(abs( sum(side_percent)-1 ) < 1e-4);
+
+    if max(side_percent) - min(side_percent) < 1e-12
+        side_percent = ones(size(side_percent)) / n_sides;
+    end
     
     N_side = ceil(N*side_percent);
     N = sum(N_side); % new N

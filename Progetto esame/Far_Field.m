@@ -1,11 +1,11 @@
-function [FFP, mean_h] = Far_Field(N, k, v, theta)
+function [farField, mean_h] = Far_Field(N, k, v, theta)
 
 % Far field pattern di un'onda piana che incontra un poligono
 % formula a pag 73 delle dispense
 
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
-n_gauss_pts_farField = 5;
+n_gauss_pts_farField = 10;
 n_gauss_pts_off_diag = 5;
 n_gauss_pts_on_diag = 30;
 
@@ -17,8 +17,13 @@ side_length = abs(diff(v));
 side_percent = side_length./perimeter;
 assert(abs( sum(side_percent)-1 ) < 1e-4);
 
+if max(side_percent) - min(side_percent) < 1e-12
+    side_percent = ones(size(side_percent)) / n_sides;
+end
+
 N_side = ceil(N*side_percent);
 N = sum(N_side); % new N
+% fprintf("Numero lati = %i \t N = %i\n", length(v)-1, N)
 p_k = cell(n_sides, 1); % punti estremi di un elemento
 
 x_k = cell(n_sides, 1); %  nodi di collocazione (punti medi)
@@ -89,7 +94,5 @@ for j = 1:N
     farField = farField + coeff * psi(j) * h_k(j) * integrand * wq_plot;
 end
 
-
-FFP = -min(log10(abs(farField))) + log10(abs(farField));
 
 end
