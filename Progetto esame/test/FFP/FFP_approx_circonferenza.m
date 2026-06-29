@@ -2,8 +2,8 @@ clear; clc; close all;
 
 % Considero il far field di una circonferenza di raggio R e guardo il far
 % field di poligoni regolari inscritti con numero di lati variabile 
-% mi aspetto che aumentando il numero di lati ho approssimazione sempre più
-%  accurata
+% mi aspetto che aumentando il numero di lati abbia approssimazione sempre più
+% accurata
 
 max_edges = 12; 
 edges = 2.^(4:max_edges); % uso tanti gradi di libertà a quanti sono i vertici
