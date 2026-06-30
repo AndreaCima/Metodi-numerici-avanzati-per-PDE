@@ -4,9 +4,9 @@ clear; clc; close all;
 
 R = 1; % raggio circonferenza
 z0 = 0 + 0*1i; % centro circonferenza
-k = 20; 
+k = 40; 
 L_max = ceil(k*R)+20;
-theta = pi/4; 
+theta = pi/3; 
 d = exp(1i*theta);
 
 obs = @(t) z0 + R*exp(1i*t); 

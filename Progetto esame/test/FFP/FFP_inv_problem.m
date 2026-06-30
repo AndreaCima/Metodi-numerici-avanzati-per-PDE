@@ -30,17 +30,15 @@ ub = [5, pi/2];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % ottimizzazione surrogateopt + fminsearch
 
-
-
 options_surf = optimoptions('surrogateopt', ...
     'MaxFunctionEvaluations', 60, ... 
     'Display', 'iter');
 % trovo il guess iniziale che poi passo a fminseaech
 [x_global, fval_global] = surrogateopt(func, lb, ub, options_surf); 
  
-opzioni = optimset('Display', 'iter', 'TolFun', 1e-10);
+options = optimset('Display', 'iter', 'TolFun', 1e-10);
 
-[x_opt_fmin, err_opt_fmin] = fminsearch(func, x_global, opzioni);
+[x_opt_fmin, err_opt_fmin] = fminsearch(func, x_global, options);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Particle swarm
@@ -71,8 +69,7 @@ res_swarm = [x_opt_swarm(1); x_opt_swarm(2); err_opt_swarm];
 tabella_confronto = table(metriche, target, res_fmin, res_swarm, ...
     'VariableNames', {'Parametro', 'Target', 'Fmin', 'Swarm'});
 
-
-disp(tabella_confronto);
+disp(tabella_confronto)
 
 
 

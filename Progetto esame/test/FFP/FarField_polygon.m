@@ -6,8 +6,8 @@ k = 5;
 % N = 8*k;
 N = 1000;
 
-% v = [1+0*1i, 0+1i, 0+0*1i]; % vertici (senso antiorario)
-v = exp( 1i * (0:999) * 2*pi / 1000 );
+v = [1+0*1i, 0+1i, 0+0*1i]; % vertici (senso antiorario)
+% v = exp( 1i * (0:999) * 2*pi / 1000 );
 
 theta = pi/3; 
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
