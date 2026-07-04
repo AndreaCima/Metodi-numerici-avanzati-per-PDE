@@ -10,66 +10,80 @@ clear; clc; close all;
 N = 2^8;
 k = 20;
 theta = 0;
+tol = 1e-10;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% calcolo il far field di riferimento
+% vettori dei target
+l_targets = [0.5, 0.7, 1.5, 3.0];
+alpha_targets = [0, pi/18, pi/4, pi/3];
 
-l_target = 0.7;
-alpha_target = pi/18;
-
-v = get_vertices(l_target, alpha_target);
-
-[FFP_target, ~] = Far_Field(N, k, v, theta);
-
-clear v
-
-func = @(x) compute_err(x(1), x(2), FFP_target, N, k, theta); % funzione che devo minimizzare
-% bounds 
-lb = [0.1, 0];
-ub = [5, pi/2];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ottimizzazione surrogateopt + fminsearch
-
+% parametri degli algoritmi di ottimizzazione
 options_surf = optimoptions('surrogateopt', ...
     'MaxFunctionEvaluations', 60, ... 
-    'Display', 'iter');
-% trovo il guess iniziale che poi passo a fminseaech
-[x_global, fval_global] = surrogateopt(func, lb, ub, options_surf); 
- 
-options = optimset('Display', 'iter', 'TolFun', 1e-10);
+    'Display', 'off');
 
-[x_opt_fmin, err_opt_fmin] = fminsearch(func, x_global, options);
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Particle swarm
+options_fmin = optimset('Display', 'off', ...
+    'TolFun', tol);
 
 options_swarm = optimoptions('particleswarm', ...
     'SwarmSize', 100, ...            
     'FunctionTolerance', 1e-6, ...  
-    'ObjectiveLimit', 1e-8, ...
+    'ObjectiveLimit', tol, ...
     'MaxStallIterations', 100, ...   
     'MaxIterations', 2000, ...       
     'Display', 'iter');
-% devo specificare il numero di variabili, in questo caso 2 
-[x_opt_swarm, err_opt_swarm] = particleswarm(func, 2, lb, ub, options_swarm);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% stampa dei risultati
+% bounds 
+lb = [0.1, 0];
+ub = [5, pi/2];
 
-metriche = {'Lato'; 'Angolo'; 'Errore'};
-target = [l_target; alpha_target; 0]; % il target dell'errore sarebbe 0
+matrix_results = zeros(length(l_targets)*length(alpha_targets), 6); % da modificare il 6 quando considero anche particle swarm
+row_idx = 1;
+for i = 1:length(l_targets)
+    for j = 1:length(alpha_targets)
 
-% risultati fminsearch
-res_fmin = [x_opt_fmin(1); x_opt_fmin(2); err_opt_fmin];
+        l_target = l_targets(i);
+        alpha_target = alpha_targets(j);
 
-% risultati particleswarm
-res_swarm = [x_opt_swarm(1); x_opt_swarm(2); err_opt_swarm];
+        fprintf('Test in corso: l = %.2f, alpha = %.3f rad ... \n', l_target, alpha_target);
 
+        v = get_vertices(l_target, alpha_target);
+        [FFP_target, ~] = Far_Field(N, k, v, theta);
 
-tabella_confronto = table(metriche, target, res_fmin, res_swarm, ...
-    'VariableNames', {'Parametro', 'Target', 'Fmin', 'Swarm'});
+        func = @(x) compute_err(x(1), x(2), FFP_target, N, k, theta);
 
-disp(tabella_confronto)
+        % surrogate opt + fmin
+        tic;
+        [x_global, ~] = surrogateopt(func, lb, ub, options_surf);
+        [x_opt_fmin, err_opt_fmin] = fminsearch(func, x_global, options_fmin);
+        time_fmin = toc;
+
+        % particle swarm
+        % tic;
+        % [x_opt_swarm, err_opt_swarm] = particleswarm(func, 2, lb, ub, options_swarm);
+        % time_swarm = toc;
+
+        % row = table(l_target, alpha_target, ...
+        %     x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin, ...
+        %     x_opt_swarm(1), x_opt_swarm(2), err_opt_swarm, time_swarm, ...
+        %     'VariableNames', {'Target_Lato', 'Target_Angolo', ...
+        %     'Fmin_Lato', 'Fmin_Angolo', 'Fmin_Errore', 'Fmin_Tempo_s', ...
+        %     'Swarm_Lato', 'Swarm_Angolo', 'Swarm_Errore', 'Swarm_Tempo_s'});
+
+        row = [l_target, alpha_target, x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin];
+
+        matrix_results(row_idx, :) = row;
+        row_idx = row_idx + 1;
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+cols_names = {'Target_Lato', 'Target_Angolo', 'Fmin_Lato', 'Fmin_Angolo', 'Fmin_Errore', 'Fmin_Tempo_s'};
+
+matrix_results = array2table(matrix_results, 'VariableNames', cols_names);
+disp(matrix_results)
 
 
 
