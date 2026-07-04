@@ -6,7 +6,7 @@ clear; clc; close all;
 % accurata
 
 max_edges = 12; 
-edges = 2.^(4:max_edges); % uso tanti gradi di libertà a quanti sono i vertici
+edges = 2.^(4:max_edges); 
 
 R = 1; % raggio circonferenza
 z0 = 0 + 0*1i; % centro circonferenza
