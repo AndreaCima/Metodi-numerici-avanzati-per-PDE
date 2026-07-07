@@ -20,7 +20,7 @@ alpha_targets = [0, pi/18, pi/4, pi/3];
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % parametri degli algoritmi di ottimizzazione
 options_surf = optimoptions('surrogateopt', ...
-    'MaxFunctionEvaluations', 60, ... 
+    'MaxFunctionEvaluations', 200, ... 
     'Display', 'off');
 
 options_fmin = optimset('Display', 'off', ...
@@ -32,14 +32,14 @@ options_swarm = optimoptions('particleswarm', ...
     'ObjectiveLimit', tol, ...
     'MaxStallIterations', 100, ...   
     'MaxIterations', 2000, ...       
-    'Display', 'iter');
+    'Display', 'off');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % bounds 
 lb = [0.1, 0];
 ub = [5, pi/2];
 
-matrix_results = zeros(length(l_targets)*length(alpha_targets), 6); % da modificare il 6 quando considero anche particle swarm
+matrix_results = zeros(length(l_targets)*length(alpha_targets), 10); 
 row_idx = 1;
 for i = 1:length(l_targets)
     for j = 1:length(alpha_targets)
@@ -61,18 +61,15 @@ for i = 1:length(l_targets)
         time_fmin = toc;
 
         % particle swarm
-        % tic;
-        % [x_opt_swarm, err_opt_swarm] = particleswarm(func, 2, lb, ub, options_swarm);
-        % time_swarm = toc;
+        tic;
+        [x_opt_swarm, err_opt_swarm] = particleswarm(func, 2, lb, ub, options_swarm);
+        time_swarm = toc;
 
-        % row = table(l_target, alpha_target, ...
-        %     x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin, ...
-        %     x_opt_swarm(1), x_opt_swarm(2), err_opt_swarm, time_swarm, ...
-        %     'VariableNames', {'Target_Lato', 'Target_Angolo', ...
-        %     'Fmin_Lato', 'Fmin_Angolo', 'Fmin_Errore', 'Fmin_Tempo_s', ...
-        %     'Swarm_Lato', 'Swarm_Angolo', 'Swarm_Errore', 'Swarm_Tempo_s'});
+        row = [l_target, alpha_target, ...
+            x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin, ...
+            x_opt_swarm(1), x_opt_swarm(2), err_opt_swarm, time_swarm];
 
-        row = [l_target, alpha_target, x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin];
+        % row = [l_target, alpha_target, x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin];
 
         matrix_results(row_idx, :) = row;
         row_idx = row_idx + 1;
@@ -80,10 +77,14 @@ for i = 1:length(l_targets)
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-cols_names = {'Target_Lato', 'Target_Angolo', 'Fmin_Lato', 'Fmin_Angolo', 'Fmin_Errore', 'Fmin_Tempo_s'};
+cols_names = {'Target_Lato', 'Target_Angolo', ...
+    'Fmin_Lato', 'Fmin_Angolo', 'Fmin_Errore', 'Fmin_Tempo_s', ...
+    'Swarm_Lato', 'Swarm_Angolo', 'Swarm_Errore', 'Swarm_Tempo_s'};
 
-matrix_results = array2table(matrix_results, 'VariableNames', cols_names);
-disp(matrix_results)
+table_results = array2table(matrix_results, 'VariableNames', cols_names);
+disp(table_results)
+
+writetable(table_results, 'inv_problem.csv')
 
 
 
