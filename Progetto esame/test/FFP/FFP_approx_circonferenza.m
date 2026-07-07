@@ -30,9 +30,9 @@ end
 Err = zeros(length(edges), length(k_val));
 
 for k = 1:length(k_val)
-    fprintf("Testing con k = %i\n", k_val(k))
+    fprintf("Testing con k = %i...\n", k_val(k))
     L_max = ceil(k*R)+20;
-    for n = progress(1:length(edges))
+    for n = 1:length(edges)
         v = z0 + R * exp( 1i * (0:edges(n)-1) * 2*pi / edges(n) ); % vertici del poligono inscritto
         [FFP, ~] = Far_Field(edges(n), k, v, theta_inc);
         Err(n, k) = norm(FFP-FFP_ref{k}, 2)/norm(FFP_ref{k}, 2);
@@ -46,6 +46,6 @@ grid on
 hold on 
 labels = arrayfun(@(k) sprintf("k = %i", k), k_val, UniformOutput=false);
 legend(labels)
-xlabel('numero lati', Interpreter = 'latex')
-ylabel('errore', Interpreter = 'latex')
+xlabel('Numero lati', Interpreter = 'latex')
+ylabel('Errore', Interpreter = 'latex')
 
