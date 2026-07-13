@@ -13,7 +13,6 @@ theta = -pi/4;
 N = 2.^(4:(n_max-1));
 
 
-
 fprintf("Computing psi_ref \t")
 [psi_ref, ~, ~] = BEM_psi(N_ref, k, v, theta);
 fprintf("done\n")
@@ -46,21 +45,20 @@ figure;
 loglog(N, times, 'bo-', LineWidth=2)
 grid on; 
 title("Assembling time vs Ndof", Interpreter="latex")
+xlabel("degrees of freedom", Interpreter="latex")
+ylabel("time (s)")
 
 figure; 
 loglog(N, Err, 'bo-', LineWidth=2)
 grid on;
 title("Error vs Ndof", Interpreter="latex")
+xlabel("degrees of freedom", Interpreter="latex")
+ylabel("error")
 
 figure; 
 loglog(H, Err, 'bo-', LineWidth=2)
 grid on; hold on;
 title("Error vs mesh size", Interpreter="latex")
-
-
-
-
-
-
-
+xlabel("mesh size", Interpreter="latex")
+ylabel("error")
 
