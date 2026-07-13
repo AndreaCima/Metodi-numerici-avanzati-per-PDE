@@ -47,7 +47,6 @@ tau_k = [tau_k{:}].';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 lambda = 2*pi/k; 
 
 dist_val = [lambda/4, lambda/2, 3*lambda/4];
@@ -140,14 +139,6 @@ pcolor(abs(figures{3, 3})); shading flat; axis equal; colormap("hot"); axis off;
 title('$dist = \frac{3\lambda}{4}$', Interpreter='latex')
 
 
-function [x, w] = gaussquad(q)
-% quadrature nodes and weights for the Gauss quadrature on [-1 1]
-B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
-[V, D] = eig( diag(B, -1) + diag(B, 1) );
-x = ( diag(D)+1 )/2;
-w = ( V(1, :).*V(1, :) )';
-
-end
 
 
 
