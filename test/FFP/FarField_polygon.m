@@ -1,12 +1,11 @@
 % Far field pattern di un'onda piana che rimbalza contro un poligono
-% formula a pag 73 delle dispense
 clear; clc; close all; 
 
 k = 5; 
 % N = 8*k;
 N = 1000;
 
-v = [1+0*1i, 0+1i, 0+0*1i]; % vertici (senso antiorario)
+v = [1+0*1i, 0+1i, 0+0*1i]; 
 % v = exp( 1i * (0:999) * 2*pi / 1000 );
 
 theta = pi/3; 
@@ -30,12 +29,12 @@ end
 
 N_side = ceil(N*side_percent);
 N = sum(N_side); % new N
-p_k = cell(n_sides, 1); % extreme points of an element
+p_k = cell(n_sides, 1); 
 
-x_k = cell(n_sides, 1); % collocation points (midpoints)
-tau_k = cell(n_sides, 1); % tangent vectors (I compute a single one for each side )
+x_k = cell(n_sides, 1); 
+tau_k = cell(n_sides, 1); 
 
-h_k = cell(n_sides, 1); % mesh size per element, elements on the same side share the same value
+h_k = cell(n_sides, 1); 
 
 for i = 1:n_sides
     p_k{i} = linspace(v(i), v(i+1), N_side(i)+1);

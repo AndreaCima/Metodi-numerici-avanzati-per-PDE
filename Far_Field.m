@@ -1,7 +1,6 @@
 function [farField, mean_h] = Far_Field(N, k, v, theta)
 
 % Far field pattern di un'onda piana che incontra un poligono
-% formula a pag 73 delle dispense
 
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 

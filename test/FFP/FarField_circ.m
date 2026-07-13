@@ -1,13 +1,12 @@
 % far field di un'onda piana contro una circonferenza 
-% calcoli fatti su un foglio di brutta, ho fatto la foto
 clear; clc; close all; 
 
-R = 1; % raggio circonferenza
-z0 = 0 + 0*1i; % centro circonferenza
+R = 1; 
+z0 = 0 + 0*1i; 
 k = 40; 
 L_max = ceil(k*R)+20;
-theta = pi/3; 
-d = exp(1i*theta);
+theta_inc = pi/3; 
+d = exp(1i*theta_inc);
 
 obs = @(t) z0 + R*exp(1i*t); 
 obs_der = @(t) 1i*R*exp(1i*t); 
@@ -25,17 +24,14 @@ mask = (X.^2 + Y.^2 < R); % disco di raggio R
 
 u_scat = zeros(size(Z));
 
-fprintf("Computing u_ref \t")
-% calcolo il campo scatterato (non strettamente necessario) e il far field
-% pattern (vedere foto sul telefono per la formula usata)
 u_coeff = zeros(2*L_max+1, 1);
 theta = linspace(0, 2*pi, 360)';
 farField = zeros(size(theta));
 
 for l = -L_max:L_max
+    % calcolo il campo scatterato solo per i plot, non serve per il far
+    % field
     u_scat = u_scat - (1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) .* besselh(l, 1, k*abs(Z)) .* (Z./(d*abs(Z))).^l;
-    % nei coefficienti sotto c'è un segno meno, ma tanto poi plotto il
-    % valore assoluto, lo metto lo stesso per completezza
     
     u_coeff(l+L_max+1) = -(1i)^l * besselj(l, k*R) ./ besselh(l, 1, k*R) * (1/d)^l; 
     farField = farField + sqrt( 2/(pi*k) ) * exp(-pi*1i/4) * u_coeff(l+L_max+1) * exp(-l*pi*1i/2) * exp(1i*l*(theta));
@@ -45,20 +41,18 @@ for l = -L_max:L_max
 end
 
 u_scat(mask) = complex(NaN, NaN);
-fprintf("done\n")
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  PLOT  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 figure; 
 pcolor(X, Y, abs(u_scat)); shading flat; colorbar; axis square; axis off; colormap("hot")
 
 figure;
-semilogy(-L_max:L_max, abs(u_coeff), LineWidth=2, DisplayName="valore assoluto")
+name_plot = sprintf("Modulo coefficenti campo scatterato, kR=%.1f", k*R);
+semilogy(-L_max:L_max, abs(u_coeff), LineWidth=2)
+title(name_plot, Interpreter="latex")
 grid on
 
-% Guardando i plot dei moduli dei coefficienti di u_scat si vede
-% che per valori di \ell \in \mathbb{Z} molto più grandi o più piccoli (in
-% modulo) del valore k*R si hanno coefficienti molto piccoli (in modulo)
+% si vede che abs(coeff_\ell) \ll 1 se |\ell| \ge kR + 20
 
 figure; 
 minFarField = min(log10(abs(farField)));

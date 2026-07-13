@@ -1,8 +1,7 @@
-% uso la funzione fminsearch per risolvere un problema inverso in cui dato
-% il far field cerco di ricostruire la forma dell'ostacolo. 
-% suppongo di sapere che
-% è un quadrato centrato nell'origine, ma non conosco nè la lungezza del
-% lato, nè di quanto è ruotato
+% risoluzione semplificata di un problema inverso in cui suppongo di sapere
+% che l'stacolo è un
+% quadrato centrato nell'origine, ma non conosco la lunghezza del lato e la
+% sua orientazione
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear; clc; close all; 
@@ -40,7 +39,7 @@ lb = [0.1, 0];
 ub = [5, pi/2];
 
 matrix_results = zeros(length(l_targets)*length(alpha_targets), 10); 
-row_idx = 1;
+row_idx = 1; % indice per salvare i risultati in una tabella
 for i = 1:length(l_targets)
     for j = 1:length(alpha_targets)
 
@@ -52,6 +51,7 @@ for i = 1:length(l_targets)
         v = get_vertices(l_target, alpha_target);
         [FFP_target, ~] = Far_Field(N, k, v, theta);
 
+        % funzione che devo minimizzare
         func = @(x) compute_err(x(1), x(2), FFP_target, N, k, theta);
 
         % surrogate opt + fmin
@@ -68,8 +68,6 @@ for i = 1:length(l_targets)
         row = [l_target, alpha_target, ...
             x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin, ...
             x_opt_swarm(1), x_opt_swarm(2), err_opt_swarm, time_swarm];
-
-        % row = [l_target, alpha_target, x_opt_fmin(1), x_opt_fmin(2), err_opt_fmin, time_fmin];
 
         matrix_results(row_idx, :) = row;
         row_idx = row_idx + 1;

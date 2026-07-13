@@ -1,4 +1,6 @@
-% studio convergenza FFP
+% studio errore FFP rispetto ad una soluzione di riferimento (calcolata con
+% un elevato numero di gradi di libertà) all'aumentare dei gradi di libertà
+
 clear; clc; close all; 
 max_n = 13;
 N_ref = 2^max_n;

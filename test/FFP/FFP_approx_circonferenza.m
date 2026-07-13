@@ -1,9 +1,8 @@
-clear; clc; close all;
+% Approssimo una circonferenza con poligoni regolari con un numero
+% crescente di lati e guardo come si comporta l'errore tra il far field di
+% riferimento e quello calcolato con un poligono
 
-% Considero il far field di una circonferenza di raggio R e guardo il far
-% field di poligoni regolari inscritti con numero di lati variabile 
-% mi aspetto che aumentando il numero di lati abbia approssimazione sempre più
-% accurata
+clear; clc; close all;
 
 max_edges = 12; 
 edges = 2.^(4:max_edges); 

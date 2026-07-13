@@ -1,4 +1,4 @@
-% studio errore per BEM in cui l'ostacolo è S^1
+% studio errore per BEM in cui l'ostacolo è una circonferenza
 clear; clc; close all; 
 
 
