@@ -1,6 +1,5 @@
-% studio errore per BEM con ostacolo curvilineo
+% studio errore per BEM in cui l'ostacolo è S^1
 clear; clc; close all; 
-
 
 
 R = 1; % raggio circonferenza
