@@ -1,19 +1,18 @@
 function [u_scat, times, h_k] = BEM_curv(N)
-% metodo BEM con onda piana (per il momento) che incontra ostacolo curvilineo
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%  PARAMETRI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % circonferenza
-z0 = 0+0*0i; % centro 
-R = 1; % raggio
-obs = @(t) z0 + R*exp(1i*t); % ostacolo
-obs_der = @(t) 1i*R*exp(1i*t); % derivata
-obs_der_abs = @(t) abs(obs_der(t)); % abs(derivata), mi serve per il valore del perimetro
-
+% z0 = 0+0*0i;  
+% R = 1; 
+% obs = @(t) z0 + R*exp(1i*t); 
+% obs_der = @(t) 1i*R*exp(1i*t); 
+% obs_der_abs = @(t) abs(obs_der(t)); 
+% 
 % ostacolo kite
-% obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
-% obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
-% obs_der_abs = @(t) abs(obs_der(t));
+obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
+obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
+obs_der_abs = @(t) abs(obs_der(t));
 
 
 k = 20;
