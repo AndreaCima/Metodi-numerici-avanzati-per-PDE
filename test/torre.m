@@ -1,21 +1,23 @@
-clear; clc; close all; 
+clear; clc; close all;
 
-% Parameters
-v = 0.5*[-1+1i, -1-1i, 1-1i]; % vertices of \Gamma (counterclockwise)
+v = [ ...
+    -3+0i,  3+0i,  3+1i,  1.8+1i, ...
+    1.8+6i, 2.8+6i, 2.8+8i, 1.6+8i, ...
+    1.6+6.8i, 0.6+6.8i, 0.6+8i, -0.6+8i, ...
+    -0.6+6.8i, -1.6+6.8i, -1.6+8i, -2.8+8i, ...
+    -2.8+6i, -1.8+6i, -1.8+1i, -3+1i ...
+];
+
 k = 20;
-N = 4*k; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k
-x0 = .5 + .5i;
-x_lim = [real(x0)-2,  real(x0)+2]; 
-y_lim = [imag(x0)-2, imag(x0)+2];
-
-
+N = 1000; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
+x_lim = [-5 5]; 
+y_lim = [0 10];
+theta = pi/2;
 n_gauss_pts_plot = 5;
-n_gauss_pts_off_diag = 4;
-n_gauss_pts_on_diag = 10;
-n_points_plot = 200;
- 
-l = 3;
-u_inc = @(x) besselh(l,1,k*abs(x-x0)) .* exp(1i*l*angle(x-x0)); 
+n_gauss_pts_off_diag = 5;
+n_gauss_pts_on_diag = 30;
+n_points_plot = 600;
+u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
 % Geometry
 v = [v v(1)];
@@ -23,11 +25,7 @@ n_sides = length(v)-1;
 perimeter = sum(abs(v - [v(2:end) v(1)]));
 side_length = abs(diff(v));
 side_percent = side_length./perimeter;
-assert(sum(side_percent)==1);
-
-if max(side_percent) - min(side_percent) < 1e-12
-    side_percent = ones(size(side_percent)) / n_sides;
-end
+assert(sum(side_percent) - 1 < 1e-4);
 
 N_side = ceil(N*side_percent);
 N = sum(N_side); % new N
@@ -46,52 +44,31 @@ for i = 1:n_sides
 end
 x_k = [x_k{:}].'; 
 p_k = [p_k{:}].'; 
-
+% delete the edges of Gamma (where diff(p_k)=0. I mantain th first one st p_0 = p_N
 p_k = p_k(diff(p_k) ~= 0); 
 h_k = [h_k{:}].';
 tau_k = [tau_k{:}].';
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% plot \Gamma TO REMOVE AT THE END
-% figure;
-% plot(real(p_k), imag(p_k), 'k')
-% hold on
-% scatter(real(x_k), imag(x_k), 20, 'filled', 'ro')
-% scatter(real(p_k), imag(p_k), 20, 'filled', 'b')
-% xlim(x_lim)
-% ylim(y_lim)
-% grid on
-
-% plot u_inc # TO REMOVE AT THE END
-% figure;
-% [x_plot_inc, y_plot_inc] = meshgrid(linspace(-2,2,200), linspace(-2,2,200));
-% u_inc_plot = u_inc(x_plot_inc + 1i*y_plot_inc);
-% pcolor(x_plot_inc, y_plot_inc, real(u_inc_plot)); shading flat % eventally modify in imag(U)
-% title('$u_{inc}$', Interpreter='latex')
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Assembling A and F
 tic
 F = -u_inc(x_k);
 
 A = zeros(N, N);
 [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
+y_q = p_k + h_k * xq_off_diag.' .* tau_k;
 for j = 1:N
-    for m = 1:N
-        y_q = p_k(m) + (h_k(m)/2) * (xq_off_diag+1) * tau_k(m);
-        r = abs(x_k(j)-y_q);
-        integrand = besselh (0, 1, k*r);
-        A(j, m) = (1i/4)*(h_k(m)/2) * wq_off_diag.'*integrand;
-    end
+    
+    r = abs(x_k(j)-y_q);
+    integrand = besselh(0, 1, k*r);
+    A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
 end
 % fix the diagonal of A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
 for j = 1:N
-    y_q = (h_k(j)/4)*(xq_on_diag+1);
+    y_q = h_k(j) * xq_on_diag;
    
     integrand = besselh(0, 1, k*y_q);
-    A(j, j) = (1i/2)*(h_k(j)/4)*wq_on_diag.'*integrand;
+    A(j, j) = (1i/2)*(h_k(j)/2)*wq_on_diag.'*integrand;
 end
 time_assembling = toc;
 
@@ -102,9 +79,9 @@ time_lin_sist = toc;
 
 % Plot the solution
 tic
-x_plot = linspace(x_lim(1), x_lim(2), n_points_plot);
-y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
-[X, Y] = meshgrid(x_plot, y_plot);
+x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
+y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
+[X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1));
 Z = X + 1i*Y;
 
 u_scat = zeros(size(Z));
@@ -112,17 +89,11 @@ in = inpolygon(X, Y, real(v), imag(v));
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
 for j = 1:numel(Z)
-    if in(j)
-        u_scat(j) = NaN; % inside the polygon
-    else
-        val = 0;
-        for m = 1:N
-            y_q = p_k(m) + (h_k(m)/2) * (xq_plot+1) * tau_k(m);
-            r = abs(Z(j) - y_q);
-            integrand = besselh(0, 1, k * r);
-            val = val + (1i / 4) * psi(m) * (h_k(m)/2)* (wq_plot.' * integrand);
-        end
-        u_scat(j) = val;
+    if ~in(j)
+        y_q = p_k + (h_k * xq_plot.') .* tau_k;
+        r = abs(Z(j)-y_q);
+        integrand = besselh(0, 1, k*r);
+        u_scat(j) = sum(  (1i/4) * integrand .* psi .* h_k * wq_plot);
     end
 end
 time_plot = toc;
@@ -130,14 +101,8 @@ time_plot = toc;
 u_inc_grid = u_inc(Z);
 u_tot = u_scat + u_inc_grid;
 
-R = abs(Z - x0);
-tol = 1e-1;
 u_tot(in) = complex(NaN, NaN);
-u_tot(abs(u_tot) > 2) = complex(NaN, NaN);
-
 u_inc_grid(in) = complex(NaN, NaN);
-u_inc_grid(abs(u_inc_grid) > 2) = complex(NaN, NaN);
-
 u_scat(in) = complex(NaN, NaN);
 
 % u_inc
@@ -182,6 +147,15 @@ title('$|u_{tot}|$',Interpreter='latex')
 fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
 fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
 fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
+
+function [x, w] = gaussquad(q)
+% quadrature nodes and weights for the Gauss quadrature on [0 1]
+B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
+[V, D] = eig( diag(B, -1) + diag(B, 1) );
+x = ( diag(D)+1 )/2;
+w = ( V(1, :).*V(1, :) )';
+
+end
 
 
 
