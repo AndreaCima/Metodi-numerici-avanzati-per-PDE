@@ -3,20 +3,21 @@ clear; clc; close all;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters
-z0 = 0+0*1i; % centro della circonferenza
-R = 1; % raggio
+z0 = 0+0*1i; 
+R = 1; 
 
-% obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria, rappresenta il mio ostacolo
+% obs = @(t) z0 + R*exp(1i*t); % circonferenza unitaria
 % obs_der = @(t) 1i*R*exp(1i*t); % derivata
 % obs_der_abs = @(t) abs(1i*R*exp(1i*t)); % abs(derivata), mi serve per sapere il valore del perimetro
 
+% kite
 obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
 obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
 obs_der_abs = @(t) abs(obs_der(t));
 
 
 k = 20;
-N = 500; % degrees of freedom. (Usually N ~ k ~ 1/h). Here I use N=4*k or N = 1000 for some test
+N = 1000; 
 x_lim = [-2 2]; 
 y_lim = [-2 2];
 theta = pi;
@@ -30,7 +31,7 @@ u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta)));
 % Geometry
 t = linspace(0, 2*pi, N+1)';
 L = integral(obs_der_abs, 0, 2*pi); % perimetro
-h_k = L/N; % ampiezza elementi
+h_k = L/N; 
 p_k = obs(t);
 p_k = p_k(1:N);
 x_k = obs( (t(1:N) + t(2:N+1)) / 2 ); % punti medi
@@ -38,7 +39,7 @@ tau_k = obs_der(t(1:N));
 tau_k = tau_k./abs(tau_k);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Assemblaggio A e F
+% Assemblig A and F
 tic
 F = -u_inc(x_k);
 
@@ -68,7 +69,7 @@ end
 time_assembling = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Sistema lineare
+
 tic
 psi = A\F; 
 time_lin_sist = toc; 
@@ -90,14 +91,18 @@ in = inpolygon(X, Y, xv, yv);
 
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
 
-y_q = obs(t(1:N) + dt*xq_plot.');
+xq_plot = reshape(xq_plot, 1, 1, n_gauss_pts_plot);
+wq_plot = reshape(wq_plot, 1, 1, n_gauss_pts_plot);
 
-for j = 1:numel(Z)
-    if ~in(j)
-        r = abs(Z(j)-y_q);
-        integrand = besselh(0, 1, k*r);
-        u_scat(j) = sum(  (1i/4) * integrand .* psi * h_k * wq_plot);
-    end
+
+
+for j = 1:N
+
+    y_q = p_k(j) +  h_k * xq_plot  * tau_k(j);
+    r = abs(Z - y_q);
+
+    integrand = besselh(0, 1, k*r);
+    u_scat = u_scat + sum( (1i/4)  * integrand .* wq_plot * psi(j)*h_k, 3);
 end
 
 time_plot = toc; 
