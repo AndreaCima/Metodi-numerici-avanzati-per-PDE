@@ -1,4 +1,7 @@
 % metodo BEM con onda piana che urta contro ostacolo curvilineo
+% plot di parte reale, immaginaria e modulo per campo incidente, scatterato
+% e totale 
+
 clear; clc; close all; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
