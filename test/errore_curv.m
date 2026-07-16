@@ -1,18 +1,19 @@
-% studio errore per BEM in cui l'ostacolo è una circonferenza
+% Errore BEM nel caso in cui l'stacolo sia una circonferenza
+
 clear; clc; close all; 
 
 
-R = 1; % raggio circonferenza
-z0 = 0 + 0*1i; 
+R = 1; % raggio 
+z0 = 0 + 0*1i; % centro
+
 k = 20; 
 L_max = ceil(k*R)+10;
 theta = pi; 
 d = exp(1i*theta);
 
+% parametrizzazione bordo e derivata
 obs = @(t) z0 + R*exp(1i*t); 
 obs_der = @(t) 1i*R*exp(1i*t); 
-obs_der_abs = @(t) abs(1i*R*exp(1i*t)); 
-
 
 x_lim = [-2 2]; 
 y_lim = [-2 2];
@@ -48,7 +49,7 @@ for s = 1:length(N)
     in = inpolygon(X, Y, xv, yv); 
 
     fprintf("N = %d ", N(s))
-    [u_scat, time, h] = BEM_curv(N(s));
+    [u_scat, time, h] = BEM_curv(N(s), obs, obs_der);
     fprintf("\t h = %f\n", h)
 
     H(s) = h;
@@ -79,25 +80,13 @@ title("Error vs mesh size", Interpreter="latex")
 xlabel("Mesh size", Interpreter="latex")
 ylabel("Error", Interpreter="latex")
 
-x_pendenza = [1e-3, 1e-2];
-y_pendenza = x_pendenza.^slope;
-
-livello_dati = Err(end);
-livello_retta = y_pendenza(1);
-offset = (livello_dati / livello_retta) * 0.5;
-
-y_pendenza = y_pendenza * offset;
-
-testo_slope = ['Slope: ', num2str(slope, '%.2f')];
-plot(x_pendenza, y_pendenza*1e-3, '--k', LineWidth=1.5, DisplayName=testo_slope);
-legend(Interpreter='latex');
-
-
 f3 = figure; 
 loglog(N, times(:, 3), 'bo-', LineWidth=2)
 grid on
 hold on
 title("Plotting time", Interpreter="latex")
+xlabel("degrees of freedom", Interpreter="latex")
+ylabel("time (s)")
 
 
 
