@@ -1,19 +1,8 @@
-function [u_scat, times, h_k] = BEM_curv(N)
+function [u_scat, times, h_k] = BEM_curv(N, obs, obs_der)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%  PARAMETRI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% circonferenza
-% z0 = 0+0*0i;  
-% R = 1; 
-% obs = @(t) z0 + R*exp(1i*t); 
-% obs_der = @(t) 1i*R*exp(1i*t); 
-% obs_der_abs = @(t) abs(obs_der(t)); 
-% 
-% ostacolo kite
-obs = @(t) (cos(t) + 0.65*(cos(2*t) - 1)) + 1i*(1.5*sin(t));
-obs_der = @(t) (-sin(t) - 1.3*sin(2*t)) + 1i*(1.5*cos(t));
-obs_der_abs = @(t) abs(obs_der(t));
-
+obs_der_abs = @(t) abs(obs_der(t)); 
 
 k = 20;
 x_lim = [-2 2]; 
@@ -28,7 +17,7 @@ u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta)));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GEOMETRIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t = linspace(0, 2*pi, N+1)';
 L = integral(obs_der_abs, 0, 2*pi); % perimetro
-h_k = L/N; % ampiezza elementi
+h_k = L/N; % ampiezza media degli elementi
 x_k = obs( (t(1:N) + t(2:N+1)) / 2 ); % punti medi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%  ASSEMBLAGGIO  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,35 +28,37 @@ A = zeros(N, N);
 [xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
 
 dt = 2*pi/N; 
-
-y_q = obs(t(1:N) + dt*xq_off_diag.');
+t_q = t(1:N) + dt*xq_off_diag.';
+y_q = obs(t_q);
+jac_q = obs_der_abs(t_q);
 
 for j = 1:N
     r = abs(x_k(j)-y_q);
     integrand = besselh(0, 1, k*r);
-    A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
+
+    A(j, :) = ( (1i/4) * (integrand .* jac_q) * wq_off_diag * dt ).';
 end
 
 % fix diagonale di A
 [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
-y_q = h_k/2 * xq_on_diag;
+t_mid = (t(1:N) + t(2:N+1)) / 2;
+h_j = dt * obs_der_abs(t_mid);
 
 for j = 1:N
-    integrand = besselh(0, 1, k*y_q);
-    A(j, j) = (1i/2)*(h_k/2)*wq_on_diag.'*integrand;
+    y_q_diag = (h_j(j)/2) * xq_on_diag; 
+    integrand = besselh(0, 1, k*y_q_diag);
+    A(j, j) = (1i/2)*(h_j(j)/2)*wq_on_diag.'*integrand;
 end
 
 time_assembling = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%  SISTEMA LINEARE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Sistema lineare
 tic
 psi = A\F; 
 time_lin_sist = toc; 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PLOT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 tic
-
 x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
 y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
 [X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1));
@@ -76,21 +67,20 @@ Z = X + 1i*Y;
 u_scat = zeros(size(Z));
 xv = real(obs(t(1:N)));
 yv = imag(obs(t(1:N)));
-
 in = inpolygon(X, Y, xv, yv);
 
 [xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
-
-y_q = obs(t(1:N) + dt*xq_plot.');
+t_q_plot = t(1:N) + dt*xq_plot.';
+y_q_plot = obs(t_q_plot);
+jac_q_plot = obs_der_abs(t_q_plot);
 
 for j = 1:numel(Z)
     if ~in(j)
-        r = abs(Z(j)-y_q);
+        r = abs(Z(j)-y_q_plot);
         integrand = besselh(0, 1, k*r);
-        u_scat(j) = sum(  (1i/4) * integrand .* psi * h_k * wq_plot);
+        u_scat(j) = sum( (1i/4) * integrand .* psi .* jac_q_plot * dt * wq_plot );
     end
 end
-
 time_plot = toc; 
 
 times = [time_assembling, time_lin_sist, time_plot];
@@ -103,12 +93,3 @@ u_inc_grid(in) = complex(NaN, NaN);
 u_scat(in) = complex(NaN, NaN);
 
 end
-
-
-
-
-
-
-
-
-
