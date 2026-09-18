@@ -1,12 +1,16 @@
-function [u_scat, times, mean_h] = BEM_func(N, k, v, theta)
-
+function [u_scat, u_tot, times, mean_h] = BEM_func(N, k, v, u_inc)
     x_lim = [-1.5 1.5]; 
     y_lim = [-1.5 1.5];
     n_gauss_pts_plot = 5;
     n_gauss_pts_off_diag = 5;
     n_gauss_pts_on_diag = 30;
     n_points_plot = 150;
-    u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
+
+    if isa(u_inc, "double")
+        u_inc=@(x) exp(1i * k * real(x*exp(-1i*u_inc)));
+    end
+
+    assert(isa(u_inc, "function_handle"))
     
     % Geometry
     v = [v v(1)];
@@ -45,7 +49,7 @@ function [u_scat, times, mean_h] = BEM_func(N, k, v, theta)
     tau_k = [tau_k{:}].';
     
     
-    %%%%%%%%%%%%%%%%%%%%%%%%%% Assembling A and F %%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%% Assemblaggio A e F %%%%%%%%%%%%%%%%%%%%%%%%%%
     tic
     F = -u_inc(x_k);
     
@@ -58,7 +62,7 @@ function [u_scat, times, mean_h] = BEM_func(N, k, v, theta)
         integrand = besselh(0, 1, k*r);
         A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
     end
-    % fix the diagonal of A
+    % fix diag A
     [xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
     for j = 1:N
         y_q = h_k(j)/2 * xq_on_diag;
@@ -68,16 +72,15 @@ function [u_scat, times, mean_h] = BEM_func(N, k, v, theta)
     end
     time_assembling = toc;
     
-    %%%%%%%%%%%%%%%%%%%%%%% Solve the linear system %%%%%%%%%%%%%%%%%%%%%%%
     tic
     psi = A\F;
     time_lin_sist = toc; 
     
-    %%%%%%%%%%%%%%%%%%%%%%%%% Plot the solution %%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Plot %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
     y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
-    [X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1)); % per fare il confronoto con MPSpack
+    [X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1)); % confronto con MPSpack
     Z = X + 1i*Y;
     
     u_scat = zeros(size(Z));
@@ -97,14 +100,7 @@ function [u_scat, times, mean_h] = BEM_func(N, k, v, theta)
 
     u_scat(in) = complex(NaN, NaN);
     time_plot = toc;
+    u_tot = u_scat + u_inc(Z);
+    u_tot(in) = complex(NaN, NaN);
     times = [time_assembling, time_lin_sist, time_plot];
-end
-
-
-function [x, w] = gaussquad(q)
-    % quadrature nodes and weights for the Gauss quadrature on [0 1]
-    B = ( 1:(q-1) )./ sqrt( 4*( 1:(q-1) ).^2 -1 );
-    [V, D] = eig( diag(B, -1) + diag(B, 1) );
-    x = ( diag(D)+1 )/2;
-    w = ( V(1, :).*V(1, :) )';
 end
