@@ -19,7 +19,7 @@ H = zeros(length(N), 1);
 
 for s = 1:length(N)
     fprintf("N = %d ", N(s))
-    [u_scat, time, h] = BEM_func(N(s), k, v, theta);
+    [u_scat, u_tot, time, h] = BEM_func(N(s), k, v, theta);
     fprintf("\t h = %f\n", h)
     Err(s) = norm(u_scat(mask)-u_ref(mask), 2) / norm(u_ref(mask), 2);
     times(s, :) = time;
