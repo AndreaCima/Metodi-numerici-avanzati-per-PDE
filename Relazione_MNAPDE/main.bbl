@@ -1,0 +1,157 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global/global}
+  \entry{CK19}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=CD}{%
+         family={Colton},
+         familyi={C\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=KR}{%
+         family={Kress},
+         familyi={K\bibinitperiod},
+         given={Rainer},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{CDKR1}
+    \strng{fullhash}{CDKR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{edition}{4}
+    \field{title}{Inverse Acoustic and Electromagnetic Scattering Theory}
+    \field{year}{2019}
+  \endentry
+
+  \entry{ProxRes}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=HEJ}{%
+         family={Heller},
+         familyi={H\bibinitperiod},
+         given={Eric\bibnamedelima J.},
+         giveni={E\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Priceton University Press}%
+    }
+    \strng{namehash}{HEJ1}
+    \strng{fullhash}{HEJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{title}{Why you hear what you hear}
+    \field{year}{2013}
+  \endentry
+
+  \entry{PSO}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=KJ}{%
+         family={Kennedy},
+         familyi={K\bibinitperiod},
+         given={J},
+         giveni={J},
+      }}%
+      {{hash=ER}{%
+         family={Eberhart},
+         familyi={E\bibinitperiod},
+         given={R.},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {IEEE}%
+    }
+    \strng{namehash}{KJER1}
+    \strng{fullhash}{KJER1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{booktitle}{Proceedings of ICNN'95 - International Conference of
+  Neural Networks}
+    \field{title}{Particle swarm optimization}
+    \field{volume}{4}
+    \field{year}{1995}
+  \endentry
+
+  \entry{NelderMead}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=NJ}{%
+         family={Nocedal},
+         familyi={N\bibinitperiod},
+         given={Jorge},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=WSJ}{%
+         family={Wright},
+         familyi={W\bibinitperiod},
+         given={Stephen\bibnamedelima J.},
+         giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{NJWSJ1}
+    \strng{fullhash}{NJWSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{edition}{2}
+    \field{title}{Numerical Optimization}
+    \field{year}{2006}
+  \endentry
+
+  \entry{SurrOpt}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=RRG}{%
+         family={Regis},
+         familyi={R\bibinitperiod},
+         given={Rommel\bibnamedelima G.},
+         giveni={R\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+      {{hash=SCA}{%
+         family={Shoemaker},
+         familyi={S\bibinitperiod},
+         given={Christine\bibnamedelima A.},
+         giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{RRGSCA1}
+    \strng{fullhash}{RRGSCA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{A stochastic radial basis function method for the global
+  optimization of expensive functions}
+    \field{year}{2007}
+  \endentry
+\enddatalist
+\endinput

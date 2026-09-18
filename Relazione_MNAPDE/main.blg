@@ -1,0 +1,74 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+The style file: biblatex.bst
+Reallocating 'name_of_file' (item size: 1) to 9 items.
+Reallocating 'name_of_file' (item size: 1) to 13 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: main-blx.bib
+Database file #2: bibliografia.bib
+I was expecting a `,' or a `}'---line 19 of file bibliografia.bib
+ :  
+ :  title = {The Linear Sampling Method in Inverse Electromagnetic Scattering},
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Biblatex version: 3.21
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+You've used 6 entries,
+            6402 wiz_defined-function locations,
+            1232 strings with 9541 characters,
+and the built_in function-call counts, 35678 in all, are:
+= -- 2701
+> -- 633
+< -- 190
++ -- 916
+- -- 225
+* -- 2468
+:= -- 3942
+add.period$ -- 0
+call.type$ -- 6
+change.case$ -- 95
+chr.to.int$ -- 42
+cite$ -- 10
+duplicate$ -- 3512
+empty$ -- 3162
+format.name$ -- 319
+if$ -- 7423
+int.to.chr$ -- 0
+int.to.str$ -- 14
+missing$ -- 0
+newline$ -- 155
+num.names$ -- 262
+pop$ -- 1799
+preamble$ -- 1
+purify$ -- 117
+quote$ -- 0
+skip$ -- 1083
+stack$ -- 0
+substring$ -- 4909
+swap$ -- 704
+text.length$ -- 169
+text.prefix$ -- 6
+top$ -- 1
+type$ -- 192
+warning$ -- 0
+while$ -- 472
+width$ -- 0
+write$ -- 150
+(There was 1 error message)
