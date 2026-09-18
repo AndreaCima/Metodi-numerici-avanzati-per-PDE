@@ -21,7 +21,7 @@ mask = ~inpolygon(X, Y, real(v), imag(v)); % caso generale
 % mask = ~(X_mask.^2 + Y_mask.^2 <= 1); % complementare del disco unitario
 
 fprintf("Computing u_ref \t")
-[u_ref, ~, ~] = BEM_func(N_ref, k, v, theta);
+[u_ref, ~, ~, ~] = BEM_func(N_ref, k, v, theta);
 fprintf("done \n")
 
 H = zeros(length(N), 1);
@@ -30,7 +30,7 @@ times = zeros(length(N), 1);
 
 for s = 1:length(N)
     fprintf("N = %i \t", N(s))
-    [u_scat, time, h] = BEM_func(N(s), k, v, theta);
+    [u_scat, u_tot, time, h] = BEM_func(N(s), k, v, theta);
     fprintf("h = %.3f\n", h)
 
     H(s) = h;
