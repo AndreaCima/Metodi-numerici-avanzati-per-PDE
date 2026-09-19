@@ -1,10 +1,19 @@
-function [u_scat, u_tot, times, mean_h] = BEM_func(N, k, v, u_inc)
-    x_lim = [-1.5 1.5]; 
-    y_lim = [-1.5 1.5];
+function [u_scat, u_tot, times, mean_h] = BEM_func(N, k, v, u_inc, n_points_plot, x_lim, y_lim)
+
+    arguments
+        N 
+        k 
+        v 
+        u_inc 
+        n_points_plot = 150
+        x_lim = [-1.5 1.5]; 
+        y_lim = [-1.5 1.5];
+    end
+    
     n_gauss_pts_plot = 5;
     n_gauss_pts_off_diag = 5;
     n_gauss_pts_on_diag = 30;
-    n_points_plot = 150;
+  
 
     if isa(u_inc, "double")
         u_inc=@(x) exp(1i * k * real(x*exp(-1i*u_inc)));
