@@ -19,7 +19,7 @@ n_gauss_pts_on_diag = 30;
 n_points_plot = 600;
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
-[u_scat, u_tot, times, mean_h] = BEM_func(N, k, v, u_inc, n_points_plot, x_lim, y_lim);
+[u_scat, u_tot, times, mean_h] = BEM_func(N, k, v, u_inc, 'n_points_plot', n_points_plot, 'x_lim', x_lim, 'y_lim', y_lim);
 
 x_plot = linspace(x_lim(1), x_lim(2), n_points_plot);
 y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
