@@ -8,6 +8,9 @@ k = 20;
 theta = -pi/4;
 v = 0.5* [1+1i, -1+1i, -1-1i, 1-1i];
 
+u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
+
+
 mask = linspace(-1.5, 1.5, 151);
 mask = mask(1:end-1);
 [X_mask, Y_mask] = meshgrid(mask);
@@ -19,7 +22,7 @@ H = zeros(length(N), 1);
 
 for s = 1:length(N)
     fprintf("N = %d ", N(s))
-    [u_scat, u_tot, time, h] = BEM_func(N(s), k, v, theta);
+    [u_scat, u_tot, time, h] = BEM_func(N(s), k, v, u_inc);
     fprintf("\t h = %f\n", h)
     Err(s) = norm(u_scat(mask)-u_ref(mask), 2) / norm(u_ref(mask), 2);
     times(s, :) = time;
