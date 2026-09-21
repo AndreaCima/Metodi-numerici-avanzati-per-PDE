@@ -10,6 +10,8 @@ k = 20;
 L_max = ceil(k*R)+10;
 theta = pi; 
 d = exp(1i*theta);
+u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
+
 
 % parametrizzazione bordo e derivata
 obs = @(t) z0 + R*exp(1i*t); 
@@ -49,7 +51,7 @@ for s = 1:length(N)
     in = inpolygon(X, Y, xv, yv); 
 
     fprintf("N = %d ", N(s))
-    [u_scat, time, h] = BEM_curv(N(s), obs, obs_der);
+    [u_scat, u_tot, time, h] = BEM_curv(N(s), obs, obs_der, u_inc);
     fprintf("\t h = %f\n", h)
 
     H(s) = h;
