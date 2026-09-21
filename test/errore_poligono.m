@@ -8,6 +8,8 @@ N_ref = 2^12;
 N = 2.^(4:11);
 k = 20; 
 theta = -pi/4;
+u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
+
 
 x_plot = linspace(-1.5, 1.5, 151); % n_points_plot = 150
 [X, Y] = meshgrid(x_plot(1:end-1));
@@ -21,7 +23,7 @@ mask = ~inpolygon(X, Y, real(v), imag(v)); % caso generale
 % mask = ~(X_mask.^2 + Y_mask.^2 <= 1); % complementare del disco unitario
 
 fprintf("Computing u_ref \t")
-[u_ref, ~, ~, ~] = BEM_func(N_ref, k, v, theta);
+[u_ref, ~, ~, ~] = BEM_func(N_ref, k, v, u_inc);
 fprintf("done \n")
 
 H = zeros(length(N), 1);
@@ -30,7 +32,7 @@ times = zeros(length(N), 1);
 
 for s = 1:length(N)
     fprintf("N = %i \t", N(s))
-    [u_scat, u_tot, time, h] = BEM_func(N(s), k, v, theta);
+    [u_scat, u_tot, time, h] = BEM_func(N(s), k, v, u_inc);
     fprintf("h = %.3f\n", h)
 
     H(s) = h;
