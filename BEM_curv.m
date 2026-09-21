@@ -1,18 +1,30 @@
-function [u_scat, times, h_k] = BEM_curv(N, obs, obs_der)
+function [u_scat, u_tot, times, h_k] = BEM_curv(N, obs, obs_der, u_inc, options)
 
+arguments 
+    N
+    obs
+    obs_der
+    u_inc
+    options.k = 20
+    options.x_lim = [-2 2]; 
+    options.y_lim = [-2 2];
+    options.n_points_plot = 300
+end
+
+
+k = options.k;
+x_lim = options.x_lim;
+y_lim = options.y_lim;
+n_points_plot = options.n_points_plot;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%  PARAMETRI  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 obs_der_abs = @(t) abs(obs_der(t)); 
 
-k = 20;
-x_lim = [-2 2]; 
-y_lim = [-2 2];
-theta = pi;
 n_gauss_pts_plot = 5;
 n_gauss_pts_off_diag = 5;
 n_gauss_pts_on_diag = 30;
-n_points_plot = 300;
-u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
+
+ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% GEOMETRIA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 t = linspace(0, 2*pi, N+1)';
