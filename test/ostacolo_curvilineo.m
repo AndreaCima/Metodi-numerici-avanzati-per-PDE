@@ -23,99 +23,19 @@ k = 20;
 N = 1000; 
 x_lim = [-2 2]; 
 y_lim = [-2 2];
-theta = 0;
-n_gauss_pts_plot = 5;
-n_gauss_pts_off_diag = 5;
-n_gauss_pts_on_diag = 30;
-n_points_plot = 300;
+theta = pi;
+n_points_plot = 200;
+
 u_inc=@(x) exp(1i * k * real(x*exp(-1i*theta))); 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Geometry
-t = linspace(0, 2*pi, N+1)';
-L = integral(obs_der_abs, 0, 2*pi); % perimetro
-h_k = L/N; 
-p_k = obs(t);
-p_k = p_k(1:N);
-x_k = obs( (t(1:N) + t(2:N+1)) / 2 ); % punti medi
-tau_k = obs_der(t(1:N));
-tau_k = tau_k./abs(tau_k);
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Assemblig A and F
-tic
-F = -u_inc(x_k);
+[u_scat, u_tot, times, h_k] = BEM_curv(N, obs, obs_der, u_inc, 'n_points_plot', n_points_plot);
 
-A = zeros(N, N);
-[xq_off_diag, wq_off_diag] = gaussquad(n_gauss_pts_off_diag);
-
-dt = 2*pi/N; 
-
-y_q = obs(t(1:N) + dt*xq_off_diag.');
-
-for j = 1:N
-    r = abs(x_k(j)-y_q);
-    integrand = besselh(0, 1, k*r);
-    A(j, :) = sum((1i/4) * integrand .* h_k * wq_off_diag, 2);
-end
-
-% fix the diagonal of A
-
-[xq_on_diag, wq_on_diag] = gaussquad(n_gauss_pts_on_diag);
-y_q = h_k/2 * xq_on_diag;
-
-for j = 1:N
-    integrand = besselh(0, 1, k*y_q);
-    A(j, j) = (1i/2)*(h_k/2)*wq_on_diag.'*integrand;
-end
-
-time_assembling = toc;
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-tic
-psi = A\F; 
-time_lin_sist = toc; 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Plot
-tic
-
-x_plot = linspace(x_lim(1), x_lim(2), n_points_plot+1);
-y_plot = linspace(y_lim(1), y_lim(2), n_points_plot+1);
-[X, Y] = meshgrid(x_plot(1:end-1), y_plot(1:end-1));
+x_plot = linspace(x_lim(1), x_lim(2), n_points_plot0);
+y_plot = linspace(y_lim(1), y_lim(2), n_points_plot);
+[X, Y] = meshgrid(x_plot, y_plot);
 Z = X + 1i*Y;
-
-u_scat = zeros(size(Z));
-xv = real(obs(t(1:N)));
-yv = imag(obs(t(1:N)));
-
-in = inpolygon(X, Y, xv, yv);
-
-[xq_plot, wq_plot] = gaussquad(n_gauss_pts_plot);
-
-xq_plot = reshape(xq_plot, 1, 1, n_gauss_pts_plot);
-wq_plot = reshape(wq_plot, 1, 1, n_gauss_pts_plot);
-
-
-
-for j = 1:N
-
-    y_q = p_k(j) +  h_k * xq_plot  * tau_k(j);
-    r = abs(Z - y_q);
-
-    integrand = besselh(0, 1, k*r);
-    u_scat = u_scat + sum( (1i/4)  * integrand .* wq_plot * psi(j)*h_k, 3);
-end
-
-time_plot = toc; 
-
 u_inc_grid = u_inc(Z);
-u_tot = u_scat + u_inc_grid;
-
-u_tot(in) = complex(NaN, NaN);
-u_inc_grid(in) = complex(NaN, NaN);
-u_scat(in) = complex(NaN, NaN);
 
 % u_inc
 figure; 
@@ -155,14 +75,3 @@ title('$\mathcal{I}u_{tot}$',Interpreter='latex')
 figure; 
 pcolor(X,Y,abs(u_tot)); shading flat; axis equal; colormap(hot); axis off; colorbar
 title('$|u_{tot}|$',Interpreter='latex')
-
-fprintf("Time to assemble A and F = %f seconds\n", time_assembling)
-fprintf("Time to solve the linear system = %f seconds\n", time_lin_sist)
-fprintf("Time to plot the solution via representation formula = %f seconds\n", time_plot)
-
-
-
-
-
-
-
